@@ -13,7 +13,7 @@ import sys
 import hronlib
 import random
 
-pathash = {
+segments = {
 "mvpc":
     [["Хабаровск - MAXI Plus (гор/фед) (КТП) (SS)"        ,"01.01.09 00:00","31.12.09 23:59"],
      ["Хабаровск - MAXI Super (гор/фед) (КТП) (SS)"       ,"01.01.09 00:00","31.12.09 23:59"],
@@ -551,7 +551,7 @@ def month3(rdr,wrtrY,wrtrN,patlst):
 def makesel(infile,pattern):
     """
     """
-    patlst = pathash[pattern]
+    patlst = segments[pattern]
     fileY = infile + "-" + pattern
     fileN = pattern + "-from-" + infile
     fiter(infile,fileY,fileN,patsplit,patlst)
