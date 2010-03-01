@@ -199,35 +199,34 @@ segments = {
 ["Хабаровск - Первый07 (фед) (ПРП) (IN)"                                   ,"01.01.80 00:00","31.12.08 23:59"],
         ]                                                                  ,
 "emptydate":
-    [[""                                                                   ,"01.01.80 00:00","01.01.80 00:00"],
-     [""                                                                   ,"01.01.10 00:00","31.12.10 23:59"]],
-"arpu0-135old":
-    [[""                                                                   ,"01.01.80 00:00","31.12.08 23:59",0,135]],
-"arpu0-135new":
-    [[""                                                                   ,"01.01.09 00:00","31.12.09 23:59",0,135]],
-"arpu136-350":
-    [[""                                                                   ,"01.01.80 00:00","31.12.09 23:59",136,350]],
-"arpu351-750":
-    [[""                                                                   ,"01.01.80 00:00","31.12.09 23:59",351,750]],
-"arpu751-999999":
-    [[""                                                                   ,"01.01.80 00:00","31.12.09 23:59",751,999999]]
+ [["" ,"01.01.80 00:00","01.01.80 00:00"],
+ ["" ,"01.01.10 00:00","31.12.10 23:59"]],
+ "arpu0-135old":
+ [["" ,"01.01.80 00:00","31.12.08 23:59",0,135]],
+ "arpu0-135new":
+ [["" ,"01.01.09 00:00","31.12.09 23:59",0,135]],
+ "arpu136-350":
+ [["" ,"01.01.80 00:00","31.12.09 23:59",136,350]],
+ "arpu351-750":
+    [["" ,"01.01.80 00:00","31.12.09 23:59",351,750]],
+ "arpu751-999999":
+    [["" ,"01.01.80 00:00","31.12.09 23:59",751,999999]]
 }
 
 
-def fiter(inp,outY,outN,procstr,pattern):
+def splitFile(inputFile,restFile,matchedFile,processFile,pattern):
     """
-    Open input and output objects, iterate input and process each string of input.
-    stdout
+    Split inputFile to matchedFile and restFile with using conditions in processFile and pattern.
     """
-    ifl = open(inp,"rb")
+    ifl = open(inputFile,"rb")
     rdr = csv.reader(ifl)
-    fileY = open(outY,"wb")
-    fileN = open(outN,"wb")    
-    wrtrY = csv.writer(fileY,dialect = 'excel')
-    wrtrN = csv.writer(fileN,dialect = 'excel')
-    procstr(rdr,wrtrY,wrtrN,pattern)
-    fileY.close()
-    fileN.close()
+    rp = open(restFile,"wb")
+    mp = open(matchedFile,"wb")    
+    wrtrRP = csv.writer(rp,dialect = 'excel')
+    wrtrMP = csv.writer(mp,dialect = 'excel')
+    processFile(rdr,wrtrRP,wrtrMP,pattern)
+    rp.close()
+    mp.close()
     ifl.close()
 
 def tarif(rdr,wrtrY,wrtrN,patlst):
@@ -236,18 +235,18 @@ def tarif(rdr,wrtrY,wrtrN,patlst):
     for rec in rdr:
         wrtrY.writerow([rec[0]])
 
-def identy(rdr,wrtr,patlst):
+def identy(rdr,wrtrY,wrtrN,patlst):
     """
     Identical processing. Input = Output
     """
     for rec in rdr:
-        wrtr.writerow(rec)
+        wrtrY.writerow(rec)
 
-def changecol1w2(rdr,wrtrY,wrtrN,patlst):
+def changeColumns(rdr,wrtrY,wrtrN,patlst):
     for rec in rdr:
         wrtrY.writerow([rec[1],rec[0],rec[2],rec[3],rec[4],rec[5]])
 
-def add4col(rdr,wrtrY,wrtrN,patlst):
+def addColumns(rdr,wrtrY,wrtrN,patlst):
     for rec in rdr:
         rc.append(str(arpu+arpuAP))
         rc.append(str(arpu))
@@ -323,7 +322,7 @@ def colupto3(rdr,wrtrY,wrtrN,patlst):
                 arpuAP = arpuAP + int(tmp[4])
             except:
                 pass
-            dactiv = hronlib.str2dt(str(tmp[2]))
+            dactiv = hronlib.string2date(str(tmp[2]))
             tmpdec=tmp
         if tmp[5]=="oct":
             try:
@@ -331,7 +330,7 @@ def colupto3(rdr,wrtrY,wrtrN,patlst):
                 arpuAP = arpuAP + int(tmp[4])
             except:
                 pass
-            dactiv = hronlib.str2dt(str(tmp[2]))
+            dactiv = hronlib.string2date(str(tmp[2]))
             tmpoct=tmp
         if tmp[5]=="nov":
             try:
@@ -339,19 +338,19 @@ def colupto3(rdr,wrtrY,wrtrN,patlst):
                 arpuAP = arpuAP + int(tmp[4])
             except:
                 pass
-            dactiv = hronlib.str2dt(str(tmp[2]))
+            dactiv = hronlib.string2date(str(tmp[2]))
             tmpnov=tmp
 
 
-def randsel(rdr,wrtrY,wrtrN,patlst):
+def makeRandomSample(rdr,rest,matched,patlst):
     """
     """
     pat = str(random.randint(10,24)) + ":" + str(random.randint(10,59))
     for rec in rdr:
         if rec[2].find(pat) <> -1:
-            wrtrY.writerow(rec)
+            matched.writerow(rec)
 
-def difftest(inp,out):
+def diffTest(inp,out):
     """
     Read file and write. Diff results.
     """
@@ -360,24 +359,25 @@ def difftest(inp,out):
     else:
         return "diff test failed."
 
-def splittest(infile,fileY,fileN):
+def splitTest(inputFile,restFile,matchedFile):
     print "lines"
-    os.system("wc -l " + infile)
+    os.system("wc -l " + inputFile)
     print "lines"
-    os.system("wc -l " + fileY)
+    os.system("wc -l " + restFile)
     print "lines"
-    os.system("wc -l " + fileN)
+    os.system("wc -l " + matchedFile)
     
 
-def patsplit(rdr,wrtrY,wrtrN,patlst):
+def patternSplit(rdr,rest,matched,patternsList):
     """
     """
+    s2d = hronlib.string2date
     for rec in rdr:
-        activ = hronlib.str2dt(rec[2])
+        activ = s2d(rec[2])
         flg = True
-        for pat in patlst:
-            ldate = hronlib.str2dt(pat[1])
-            rdate = hronlib.str2dt(pat[2])
+        for pat in patternsList:
+            ldate = sd2(pat[1])
+            rdate = s2d(pat[2])
             try:
                 larpu = int(pat[3])
                 rarpu = int(pat[4])
@@ -399,48 +399,56 @@ def patsplit(rdr,wrtrY,wrtrN,patlst):
                         flg = not flg
                         break
         if not flg:
-            wrtrN.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],hronlib.timelive(rdate,activ)/30.,globPAT])
+            matched.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],hronlib.timelive(rdate,activ)/30.,globPAT])
         else:
-            wrtrY.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5]])
+            rest.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5]])
 
-def averagedate(rdr,wrtrY,wrtrN,patlst):
+def averageDate(rdr,rest,matched,patternsList):
     """
     """
-    zero = hronlib.str2dt("01.01.80 00:00")
-    maxd = hronlib.str2dt("01.01.20 00:00")
-    datesmax = []
-    datesmin = []     
-    for pat in patlst:
-        datesmax.append([pat[0],zero])
-        datesmin.append([pat[0],maxd])        
-    datesmax = dict(datesmax)
-    datesmin = dict(datesmin)
+    s2d = hronlib.string2date
+    minDate = s2d("01.01.80 00:00")
+    maxDate = s2d("01.01.20 00:00")
+    maxDateForPattern = []
+    minDateForPattern = []     
+    for pat in patternsList:
+        maxDateForPattern.append([pat[0],minDate])
+        minDateForPattern.append([pat[0],maxDate])        
+    maxDateForPattern = dict(maxDateForPattern)
+    minDateForPattern = dict(minDateForPattern)
     
     for rec in rdr:
-        activ = hronlib.str2dt(rec[2])
-        flg = True
-        for pat in patlst:
-            ldate = hronlib.str2dt(pat[1])
-            rdate = hronlib.str2dt(pat[2])
+        activationDate = s2d(rec[2])
+        maxDP = maxDateForPattern[rec[0]]
+        minDP = minDateForPattern[rec[0]]
+        matched = False
+        for pat in patternsList:
+            lowLimitDate = s2d(pat[1])
+            highLimitDate = s2d(pat[2])
             try:
                 larpu = int(pat[3])
                 rarpu = int(pat[4])
             except:
                 pass
             if (rec[0].find(pat[0]) <> -1):
-                if activ>=ldate and activ<=rdate:
-                    if activ>datesmax[rec[0]]:
-                        datesmax[rec[0]] = activ
-                    if activ<datesmin[rec[0]] and activ<>zero:
-                        datesmin[rec[0]] = activ
-                    flg = not flg
+                if activationDate>=lowLimitDate and activationDate<=highLimitDate:
+                    if activationDate>maxDP:
+                        maxDP = activationDate
+                    if activationDate<minDP and activationDate<>minDate:
+                        minDP = activationDate
+                    matched = not matched
                     break
-        if not flg:
-            wrtrN.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],hronlib.timelive(rdate,activ)/30.,globPAT])
+        if matched:
+            timelive = hronlib.timelive(highLimitDate,activationDate)/30.
+            matched.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],timelive,globPAT])
         else:
-            wrtrY.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5]])
-    for pat in patlst:
-        wrtrN.writerow([pat[0],datesmax[pat[0]],datesmin[pat[0]],str(datesmin[pat[0]] + datetime.timedelta((hronlib.timelive(datesmax[pat[0]],zero) - hronlib.timelive(datesmin[pat[0]],zero))/2.))])
+            rest.writerow(rec[0:6])
+    for pat in patternsList:
+        maxDP = maxDateForPattern[pat[0]]
+        minDP = minDateForPattern[pat[0]]
+        averageDate = minDP + datetime.timedelta((hronlib.timelive(maxDP,minDate) -
+                                                  hronlib.timelive(minDP,minDate))/2.)
+        matched.writerow([pat[0], maxDP, minDP, str(averageDate)])
 
 
 def patnoempty(rdr,wrtrY,wrtrN,patlst):
@@ -483,24 +491,24 @@ def patnoempty(rdr,wrtrY,wrtrN,patlst):
 "Хабаровск - Первый07 (фед) (ПРП) (IN)":"30.06.04 18:16"
 }
     for rec in rdr:
-        activ = hronlib.str2dt(rec[2])
+        activ = hronlib.string2date(rec[2])
         flg = True
         for pat in patlst:
-            ldate = hronlib.str2dt(pat[1])
-            rdate = hronlib.str2dt(pat[2])
+            ldate = hronlib.string2date(pat[1])
+            rdate = hronlib.string2date(pat[2])
             if (rec[0].find(pat[0]) <> -1):
                 flg = not flg
                 break
         if not flg:
             if rec[2]=="":
-                rdate = hronlib.str2dt("31.12.09 23:59")
+                rdate = hronlib.string2date("31.12.09 23:59")
                 if rec[0] in datesclosed:
-                    wrtrN.writerow([rec[0],rec[1],datesclosed[rec[0]],rec[3],rec[4],rec[5],hronlib.timelive(rdate,hronlib.str2dt(datesclosed[rec[0]]))/30.])
+                    wrtrN.writerow([rec[0],rec[1],datesclosed[rec[0]],rec[3],rec[4],rec[5],hronlib.timelive(rdate,hronlib.string2date(datesclosed[rec[0]]))/30.])
                 else:
-                    wrtrN.writerow([rec[0],rec[1],"01.01.09 00:00",rec[3],rec[4],rec[5],hronlib.timelive(rdate,hronlib.str2dt("01.01.09 00:00"))/30.])
+                    wrtrN.writerow([rec[0],rec[1],"01.01.09 00:00",rec[3],rec[4],rec[5],hronlib.timelive(rdate,hronlib.string2date("01.01.09 00:00"))/30.])
             else:
                 # no empty entries move to rest
-                wrtrY.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],hronlib.timelive(rdate,hronlib.str2dt("01.01.09 00:00"))/30.])
+                wrtrY.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],hronlib.timelive(rdate,hronlib.string2date("01.01.09 00:00"))/30.])
         else:
             wrtrY.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5]])
 
@@ -548,15 +556,15 @@ def month3(rdr,wrtrY,wrtrN,patlst):
     wrtrY.writerow(rc)
 
 
-def makesel(infile,pattern):
+def makeSegmentation(inputFile,pattern):
     """
     """
-    patlst = segments[pattern]
-    fileY = infile + "-" + pattern
-    fileN = pattern + "-from-" + infile
-    fiter(infile,fileY,fileN,patsplit,patlst)
-    # fiter(infile,fileY,fileN,patnoempty,patlst)
-    splittest(infile,fileY,fileN)
+    patternsList = segments[pattern]
+    restFile = inputFile + "-" + pattern
+    matchedFile = pattern + "-from-" + inputFile
+    splitFile(inputFile,restFile,matchedFile,patternSplit,patternsList)
+    # splitFile(inputFile,restFile,matchedFile,patnoempty,patternsList)
+    splitTest(inputFile,restFile,matchedFile)
 
 if __name__ == '__main__':
     """
@@ -568,15 +576,15 @@ if __name__ == '__main__':
     # patterns = ["except","emptydate","arpu0-135new","mvpc","mass","hvpc","arpu0-135old","arpu136-350","arpu351-750","arpu751-999999"]
     patterns = ["except"]
     toggleAP = False
-    cur = ""
+    addSegmentName = ""
     for pattern in patterns:
         globPAT = pattern
-        makesel(finput + cur,pattern)
-        cur = cur + "-" + pattern
+        makeSegmentation(finput + addSegmentName,pattern)
+        addSegmentName = addSegmentName + "-" + pattern
     # print "only splited"
-        print "split ", pattern + "-from-" + finput + cur
+        print "split ", pattern + "-from-" + finput + addSegmentName
 
-    # fiter(finput,"fileY","fileN",randsel,[])
+    # splitFile(finput,"fileY","fileN",makeRandomSample,[])
     
     
     # forced out make global var
@@ -585,18 +593,18 @@ if __name__ == '__main__':
     # finput = finput + "-emptydate-except-mvpc-mass-hvpc"
     # os.system("mv " + finput + " " + finput + "-AP")
     # finput = finput + "-AP"
-    # cur = ""
+    # addSegmentName = ""
     # for pattern in patterns:
-    #     makesel(finput + cur,pattern)
-    #     cur = cur + "-" + pattern
+    #     makeSegmentation(finput + addSegmentName,pattern)
+    #     addSegmentName = addSegmentName + "-" + pattern
 
-    # # makesel(finput,"emptydate")    
-    # # makesel("emptydate","except")
-    # # makesel(finput+"-emptydate-except","mvpc")
-    # # makesel(finput+"-emptydate-except-mvpc","mass")
-    # # makesel(finput+"-emptydate-except-mvpc-mass","hvpc")
-    # fiter(finput,finput+"-up3","tmp",colupto3,[])    
-    # fiter(finput,finput+"-tarif","tmp",tarif,[])
+    # # makeSegmentation(finput,"emptydate")    
+    # # makeSegmentation("emptydate","except")
+    # # makeSegmentation(finput+"-emptydate-except","mvpc")
+    # # makeSegmentation(finput+"-emptydate-except-mvpc","mass")
+    # # makeSegmentation(finput+"-emptydate-except-mvpc-mass","hvpc")
+    # splitFile(finput,finput+"-up3","tmp",colupto3,[])    
+    # splitFile(finput,finput+"-tarif","tmp",tarif,[])
     # # os.system("sort -r " + finput+"-up3 > "+finput+"-up3-sort")
     # # os.system("sort -n " + finput+"-up3 > "+finput+"-up3-sort")
     # tarifs = open("tarif-sort","rb").readlines()
@@ -609,7 +617,7 @@ if __name__ == '__main__':
     #     # os.system("grep -e \"" + "oct" + "\" \""+str(i) + "\" > \"" + str(i) + "-oct\"")
     #     i = i + 1
         
-    # fiter(finput,finput + "-category","tmp",addcat,[sys.argv[2]])        
+    # splitFile(finput,finput + "-category","tmp",addcat,[sys.argv[2]])        
         
         
  
