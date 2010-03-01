@@ -373,33 +373,33 @@ def patternSplit(rdr,rest,matched,patternsList):
     """
     s2d = hronlib.string2date
     for rec in rdr:
-        activ = s2d(rec[2])
-        flg = True
+        activationDate = s2d(rec[2])
+        match = False
         for pat in patternsList:
-            ldate = sd2(pat[1])
-            rdate = s2d(pat[2])
+            lowLimitDate = sd2(pat[1])
+            highLimitDate = s2d(pat[2])
             try:
                 larpu = int(pat[3])
                 rarpu = int(pat[4])
             except:
                 pass
             if (rec[0].find(pat[0]) <> -1):
-                flg = not flg
+                match = not match
                 break
-                if activ>=ldate and activ<=rdate:
+                if activationDate>=lowLimitDate and activationDate<=highLimitDate:
                     try:
                         if toggleAP:
                             arpu = int(rec[4]) # ARPU AP
                         else:
                             arpu = int(rec[3]) # ARPU without AP
                         if arpu>=larpu and arpu<=rarpu:
-                            flg = not flg
+                            match = not match
                             break
                     except:
-                        flg = not flg
+                        match = not match
                         break
-        if not flg:
-            matched.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],hronlib.timelive(rdate,activ)/30.,globPAT])
+        if match:
+            matched.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],hronlib.timelive(highLimitDate,activationDate)/30.,globPAT])
         else:
             rest.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5]])
 
@@ -421,7 +421,7 @@ def averageDate(rdr,rest,matched,patternsList):
         activationDate = s2d(rec[2])
         maxDP = maxDateForPattern[rec[0]]
         minDP = minDateForPattern[rec[0]]
-        matched = False
+        match = False
         for pat in patternsList:
             lowLimitDate = s2d(pat[1])
             highLimitDate = s2d(pat[2])
@@ -436,9 +436,9 @@ def averageDate(rdr,rest,matched,patternsList):
                         maxDP = activationDate
                     if activationDate<minDP and activationDate<>minDate:
                         minDP = activationDate
-                    matched = not matched
+                    match = not match
                     break
-        if matched:
+        if match:
             timelive = hronlib.timelive(highLimitDate,activationDate)/30.
             matched.writerow([rec[0],rec[1],rec[2],rec[3],rec[4],rec[5],timelive,globPAT])
         else:
