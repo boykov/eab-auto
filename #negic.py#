@@ -271,61 +271,37 @@ def addcat(rdr,wrtrY,wrtrN,patlst):
 
 def colupto3(rdr,wrtrY,wrtrN,patlst):
     tmp = [1,2]
-    tmpoct=[]
-    tmpdec=[]
-    tmpnov=[]
+    months = {"oct":[],"nov":[],"dec":[]}
     arpu = 0
     arpuAP = 0
     flg = False
     for rec in rdr:
         rc = []
         if (tmp[1]<>rec[1]) and flg:
-            if tmpoct<>[]:
-                rc.append(str(dactiv.isoformat()))            
-                rc.append(str(arpu+arpuAP))
-                rc.append(str(arpu))
-                rc.append(str(arpuAP))
-                rc.extend(tmpoct)
-                wrtrY.writerow(rc)
-                rc = []
-            # else:
-            #     rc.extend(["","","","","",""])
-            if tmpnov<>[]:
-                rc.append(str(dactiv.isoformat()))            
-                rc.append(str(arpu+arpuAP))
-                rc.append(str(arpu))
-                rc.append(str(arpuAP))
-                rc.extend(tmpnov)
-                wrtrY.writerow(rc)
-                rc = []
-            # else:
-            #     rc.extend(["","","","","",""])
-            if tmpdec<>[]:
-                rc.append(str(dactiv.isoformat()))            
-                rc.append(str(arpu+arpuAP))
-                rc.append(str(arpu))
-                rc.append(str(arpuAP))
-                rc.extend(tmpdec)
-                wrtrY.writerow(rc)
-                rc = []
-            # else:
-            #     rc.extend(["","","","","",""])            
-            # wrtrY.writerow(rc)
-            tmpoct=[]
-            tmpnov=[]
-            tmpdec=[]
+            rc.append(str(dactiv.isoformat()))            
+            rc.append(str(arpu+arpuAP))
+            rc.append(str(arpu))
+            rc.append(str(arpuAP))
+            for m in months:
+                if m<>[]:
+                    rc.extend(m)
+                    wrtrY.writerow(rc)
+                m = []
+            rc = []
             arpu = 0
             arpuAP = 0
         flg = True
         tmp = rec
-        if tmp[5]=="dec":
-            try:
-                arpu = arpu + int(tmp[3])
-                arpuAP = arpuAP + int(tmp[4])
-            except:
-                pass
-            dactiv = hronlib.string2date(str(tmp[2]))
-            tmpdec=tmp
+        for m in months:
+            if tmp[5]=="dec":
+                try:
+                    arpu = arpu + int(tmp[3])
+                    arpuAP = arpuAP + int(tmp[4])
+                except:
+                    pass
+                dactiv = hronlib.string2date(str(tmp[2]))
+                months["dec"]=tmp
+                
         if tmp[5]=="oct":
             try:
                 arpu = arpu + int(tmp[3])
@@ -333,7 +309,7 @@ def colupto3(rdr,wrtrY,wrtrN,patlst):
             except:
                 pass
             dactiv = hronlib.string2date(str(tmp[2]))
-            tmpoct=tmp
+            months["oct"]=tmp
         if tmp[5]=="nov":
             try:
                 arpu = arpu + int(tmp[3])
@@ -341,7 +317,7 @@ def colupto3(rdr,wrtrY,wrtrN,patlst):
             except:
                 pass
             dactiv = hronlib.string2date(str(tmp[2]))
-            tmpnov=tmp
+            months["nov"]=tmp
 
 
 def makeRandomSample(rdr,rest,matched,patlst):
