@@ -271,77 +271,36 @@ def addcat(rdr,wrtrY,wrtrN,patlst):
 
 def colupto3(rdr,wrtrY,wrtrN,patlst):
     tmp = [1,2]
-    tmpoct=[]
-    tmpdec=[]
-    tmpnov=[]
+    months = {"oct":[],"nov":[],"dec":[]}
     arpu = 0
     arpuAP = 0
     flg = False
     for rec in rdr:
         rc = []
         if (tmp[1]<>rec[1]) and flg:
-            if tmpoct<>[]:
-                rc.append(str(dactiv.isoformat()))            
-                rc.append(str(arpu+arpuAP))
-                rc.append(str(arpu))
-                rc.append(str(arpuAP))
-                rc.extend(tmpoct)
-                wrtrY.writerow(rc)
-                rc = []
-            # else:
-            #     rc.extend(["","","","","",""])
-            if tmpnov<>[]:
-                rc.append(str(dactiv.isoformat()))            
-                rc.append(str(arpu+arpuAP))
-                rc.append(str(arpu))
-                rc.append(str(arpuAP))
-                rc.extend(tmpnov)
-                wrtrY.writerow(rc)
-                rc = []
-            # else:
-            #     rc.extend(["","","","","",""])
-            if tmpdec<>[]:
-                rc.append(str(dactiv.isoformat()))            
-                rc.append(str(arpu+arpuAP))
-                rc.append(str(arpu))
-                rc.append(str(arpuAP))
-                rc.extend(tmpdec)
-                wrtrY.writerow(rc)
-                rc = []
-            # else:
-            #     rc.extend(["","","","","",""])            
-            # wrtrY.writerow(rc)
-            tmpoct=[]
-            tmpnov=[]
-            tmpdec=[]
+            rc.append(str(dactiv.isoformat()))            
+            rc.append(str(arpu+arpuAP))
+            rc.append(str(arpu))
+            rc.append(str(arpuAP))
+            for m in months:
+                if months[m]<>[]:
+                    rc.extend(months[m])
+                    wrtrY.writerow(rc)
+                months[m] = []
+            rc = []
             arpu = 0
             arpuAP = 0
         flg = True
         tmp = rec
-        if tmp[5]=="dec":
-            try:
-                arpu = arpu + int(tmp[3])
-                arpuAP = arpuAP + int(tmp[4])
-            except:
-                pass
-            dactiv = hronlib.string2date(str(tmp[2]))
-            tmpdec=tmp
-        if tmp[5]=="oct":
-            try:
-                arpu = arpu + int(tmp[3])
-                arpuAP = arpuAP + int(tmp[4])
-            except:
-                pass
-            dactiv = hronlib.string2date(str(tmp[2]))
-            tmpoct=tmp
-        if tmp[5]=="nov":
-            try:
-                arpu = arpu + int(tmp[3])
-                arpuAP = arpuAP + int(tmp[4])
-            except:
-                pass
-            dactiv = hronlib.string2date(str(tmp[2]))
-            tmpnov=tmp
+        for m in months:
+            if tmp[5]==m:
+                try:
+                    arpu = arpu + int(tmp[3])
+                    arpuAP = arpuAP + int(tmp[4])
+                except:
+                    pass
+                dactiv = hronlib.string2date(str(tmp[2]))
+                months[m]=tmp
 
 
 def makeRandomSample(rdr,rest,matched,patlst):
@@ -516,45 +475,33 @@ def patnoempty(rdr,wrtrY,wrtrN,patlst):
 
 
 def month3(rdr,wrtrY,wrtrN,patlst):
+    months = {"oct":[],"nov":[],"dec":[]}
     flg = False
     tmp = [1]
-    tmpoct=[]
-    tmpdec=[]
-    tmpnov=[]
     arpu3low = 999999
     for rec in rdr:
         rc = []
         if (tmp[0]<>rec[0]) and flg:
-            if tmpoct<>[] and tmpnov<>[] and tmpdec<>[]:
-                arpu3low = int(tmpoct[3])+int(tmpnov[3])+int(tmpdec[3])
+            if months["oct"]<>[] and months["nov"]<>[] and months["dec"]<>[]:
+                arpu3low = int(months["oct"][3])+int(months["nov"][3])+int(months["dec"][3])
             else:
                 arpu3low = 999999
         rc.append(tmp[1])
-        rc.extend(tmpoct)
-        rc.extend(tmpnov)
-        rc.extend(tmpdec)
+        for m in months:
+            rc.extend(months[m])
+            months[m] = []
         wrtr.writerow(rc)
-        tmpoct=[]
-        tmpnov=[]
-        tmpdec=[]
-        
         flg = True
         tmp = rec
-        if tmp[5]=="dec":
-            tmpdec=tmp
-        if tmp[5]=="oct":
-            tmpoct=tmp
-        if tmp[5]=="nov":
-            tmpnov=tmp
-
-    if tmpoct<>[] and tmpnov<>[] and tmpdec<>[]:
-        arpu3low = int(tmpoct[3])+int(tmpnov[3])+int(tmpdec[3])
+        for m in months:
+            if tmp[5]==m:
+                months[m]=tmp
+    if months["oct"]<>[] and months["nov"]<>[] and months["dec"]<>[]:
+        arpu3low = int(months["oct"][3])+int(months["nov"][3])+int(months["dec"][3])
     else:
         arpu3low = 999999
-
-    rc.extend(tmpoct)
-    rc.extend(tmpnov)
-    rc.extend(tmpdec)
+    for m in months:
+        rc.extend(months[m])
     wrtrY.writerow(rc)
 
 
