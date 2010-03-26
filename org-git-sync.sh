@@ -1,7 +1,7 @@
 #!/bin/sh
 # Add org file changes to the repository
 # [[file:/etc/crontab][crontab]]
-REPOS="org cc mpl hron home emacs auto" 
+REPOS="org cc mpl hron home emacs auto timekeeper" 
 
 for REPO in $REPOS
 do
