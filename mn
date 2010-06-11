@@ -1,0 +1,5 @@
+#!/bin/bash
+mount -t smbfs -o username=san,password=gjkysqg,uid=test_ssh,codepage=866,iocharset=cp1251,rw //10.1.1.11/OSTATOK /ostatki/tmp
+#chown test_ssh /ostatki/1c/
+#chown test_ssh /ostatki/1c/OutFor1C/ 
+ 

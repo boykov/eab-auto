@@ -1,0 +1,3 @@
+#!/bin/bash
+exec iceweasel "http://www.google.ru/search?hl=ru&q=$*"
+exit
