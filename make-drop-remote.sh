@@ -7,5 +7,5 @@ for REPO in $REPOS
 do
     echo "Repository: $REPO"
     cd ~/git/$REPO
-    git remote add drop /home/john/Dropbox/git/$REPO.git
+    git remote add drop /home/$USER/Dropbox/git/$REPO.git
 done

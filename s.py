@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-def set_paths(root="/home/john/projects/sage-4.3.3"):
+def set_paths(root="/home/$USER/projects/sage-4.3.3"):
     """
     Set paths necessary to import sage.
     root ... the path to your Sage installation

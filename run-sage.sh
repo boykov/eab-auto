@@ -1,4 +1,4 @@
-export SAGE_ROOT=/home/john/projects/sage-4.3.3
+export SAGE_ROOT=/home/$USER/projects/sage-4.3.3
 export SAGE_DOC=$SAGE_ROOT/devel/sage/doc
 export SAGE_LOCAL=$SAGE_ROOT/local
 export DOT_SAGE=~/.sage/
