@@ -1,5 +1,5 @@
 #!/bin/sh
-if find /home/john/Dropbox/git/ -type d -name '*.git' | sed 's@^/home/john/Dropbox/git/@@; s/.git$//' | while read repo; do
+if find /home/$USER/Dropbox/git/ -type d -name '*.git' | sed 's@^/home/'$USER'/Dropbox/git/@@; s/.git$//' | while read repo; do
 	if test -d ~/git/$repo/.git
 	then
 	    echo REPO: $repo
