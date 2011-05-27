@@ -4,7 +4,7 @@ if find /home/$USER/Dropbox/git/ -type d -name '*.git' | sed 's@^/home/'$USER'/D
 	then
 	 echo REPO: $repo
 	 cd ~/git/$repo 
-	 if ! git pull usb master
+	 if ! git pull drop master
 	 then
 		exit 1
 	 fi
