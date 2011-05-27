@@ -1,5 +1,5 @@
 username="storage";
-password="Nf1SkPeY";
+password="";
 sleep 2
 echo user $username
 sleep 1
