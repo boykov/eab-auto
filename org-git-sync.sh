@@ -1,7 +1,7 @@
 #!/bin/sh
 # Add org file changes to the repository
 # [[file:/etc/crontab][crontab]]
-REPOS="org lit org-old mpl hron home emacs auto python difwave/uu difwave/upr_upr difwave/forgen difwave/gmres difwave/namelib" 
+REPOS="mpl home python difwave/uu difwave/upr_upr difwave/forgen difwave/gmres difwave/namelib org lit emacs auto" 
 
 for REPO in $REPOS
 do
