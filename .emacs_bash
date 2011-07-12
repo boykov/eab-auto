@@ -1,3 +1,21 @@
+export EDITOR='emacsclient -n'
+# export SAGE_ROOT=/home/john/projects/sage-4.3.3
+# export SAGE_DOC=$SAGE_ROOT/devel/sage/doc
+# export SAGE_LOCAL=$SAGE_ROOT/local
+# export DOT_SAGE=~/.sage/
+# export PATH=$PATH:$SAGE_ROOT/local/bin
+# export LD_LIBRARY_PATH="$SAGE_ROOT/local/lib/openmpi:$SAGE_ROOT/local/lib/:"
+export scripting=$HOME/scripting
+export PYTHONPATH=/home/john/git/python:$scripting/src/tools:$scripting/scitools/bin:$scripting/scitools/lib:/usr/local/lib/python2.6/dist-packages/rope:/usr/local/lib/python2.6/dist-packages/ropemacs:/usr/local/lib/python2.6/dist-packages
+# :$SAGE_ROOT/local/bin:$SAGE_ROOT/local/lib/python2.6/site-packages/setuptools-0.6c8-py2.6.egg:$SAGE_ROOT/local/lib/python2.6/site-packages/SQLAlchemy-0.4.3-py2.6.egg:$SAGE_ROOT/local/bin:$SAGE_ROOT/local/lib/python:$SAGE_ROOT/local/lib/python25.zip:$SAGE_ROOT/local/lib/python2.6/plat-linux2:$SAGE_ROOT/local/lib/python2.6/lib-tk:$SAGE_ROOT/local/lib/python2.6/lib-dynload:$SAGE_ROOT/local/lib/python2.6/site-packages:$SAGE_ROOT/local/lib/python2.6/site-packages/IPython/Extensions
+PATH=$PATH:$scripting/src/tools:$scripting/scitools/bin
+export MACHINE_TYPE=`uname`
+PATH=$PATH:$scripting/$MACHINE_TYPE/bin
+PATH=$PATH:~/maple12/bin
+PATH=$PATH:~/projects/android/tools
+PATH=$PATH:~/git/auto
+PATH=$PATH:/var/lib/gems/1.8/bin/
+
 # i moved aliases here special for emacs
 # some more ls aliases
 #alias ll='ls -l'
