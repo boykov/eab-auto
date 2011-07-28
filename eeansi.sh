@@ -1,1 +1,1 @@
-~/emacs/eev-current/eegchannel 2 /bin/bash
+~/emacs/eev-current/eegchannel 1 /bin/bash
