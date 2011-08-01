@@ -16,6 +16,7 @@ PATH=$PATH:~/data/src/maple14/bin
 PATH=$PATH:~/data/src/sage-4.7
 PATH=$PATH:~/projects/android/tools
 PATH=$PATH:~/git/auto
+PATH=$PATH:~/git/python
 PATH=$PATH:/var/lib/gems/1.8/bin/
 
 # i moved aliases here special for emacs
