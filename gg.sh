@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 exec firefox "http://www.google.ru/search?hl=ru&q=$*"
-exit
+return 0
