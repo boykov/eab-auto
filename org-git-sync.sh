@@ -1,7 +1,7 @@
 #!/bin/sh
 # Add org file changes to the repository
 # [[file:/etc/crontab][crontab]]
-REPOS="home difwave/upr_upr difwave/namelib org lit emacs auto python" 
+REPOS="home difwave/upr_upr difwave/namelib org lit emacs auto python patches" 
 
 for REPO in $REPOS
 do
