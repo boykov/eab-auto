@@ -1,13 +1,13 @@
 export EDITOR='emacsclient'
 export XEDITOR='/usr/bin/emacsclient'
-# export SAGE_ROOT=/home/john/projects/sage-4.3.3
+# export SAGE_ROOT=/home/eab/projects/sage-4.3.3
 # export SAGE_DOC=$SAGE_ROOT/devel/sage/doc
 # export SAGE_LOCAL=$SAGE_ROOT/local
 # export DOT_SAGE=~/.sage/
 # export PATH=$PATH:$SAGE_ROOT/local/bin
 # export LD_LIBRARY_PATH="$SAGE_ROOT/local/lib/openmpi:$SAGE_ROOT/local/lib/:"
 export scripting=$HOME/scripting
-export PYTHONPATH=/home/john/git/python:$scripting/src/tools:$scripting/scitools/bin:$scripting/scitools/lib:/usr/local/lib/python2.6/dist-packages/rope:/usr/local/lib/python2.6/dist-packages/ropemacs:/usr/local/lib/python2.6/dist-packages
+export PYTHONPATH=/home/eab/git/python:$scripting/src/tools:$scripting/scitools/bin:$scripting/scitools/lib:/usr/local/lib/python2.6/dist-packages/rope:/usr/local/lib/python2.6/dist-packages/ropemacs:/usr/local/lib/python2.6/dist-packages
 # :$SAGE_ROOT/local/bin:$SAGE_ROOT/local/lib/python2.6/site-packages/setuptools-0.6c8-py2.6.egg:$SAGE_ROOT/local/lib/python2.6/site-packages/SQLAlchemy-0.4.3-py2.6.egg:$SAGE_ROOT/local/bin:$SAGE_ROOT/local/lib/python:$SAGE_ROOT/local/lib/python25.zip:$SAGE_ROOT/local/lib/python2.6/plat-linux2:$SAGE_ROOT/local/lib/python2.6/lib-tk:$SAGE_ROOT/local/lib/python2.6/lib-dynload:$SAGE_ROOT/local/lib/python2.6/site-packages:$SAGE_ROOT/local/lib/python2.6/site-packages/IPython/Extensions
 PATH=$PATH:$scripting/src/tools:$scripting/scitools/bin
 export MACHINE_TYPE=`uname`
@@ -45,4 +45,4 @@ alias usb100='sudo umount /media/sys100 /media/data100'
 alias pdflatex='pdflatex --shell-escape'
 # alias inst='sudo aptitude install'
 # alias python='~/git/auto/run-sage.sh'
-# alias maple='/home/john/maple12/bin/xmaple'
+# alias maple='/home/eab/maple12/bin/xmaple'
