@@ -1,1 +1,1 @@
-maxima -q
+/usr/bin/ipython 
