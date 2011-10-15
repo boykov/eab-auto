@@ -7,7 +7,7 @@ import math,sys
 from numpy import *
 # from math import cos,sin,pi
 
-numpoints = 10000.
+# numpoints = 10000.
 # TODO если выделять массив pointsEllipsoide динамически,
 # то можно numberPointsEllipsoide не использовать, а брать размер этого массива.
 

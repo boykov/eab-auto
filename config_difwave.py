@@ -72,9 +72,9 @@ RSHAP=2.0 # radius_hat
 MINKM=5   # length_minimums
 KTO=50    # max_neighbors
 
-KTMAX = 100          # max_np
-XT = zeros((50,3))  # points_array
-numpoints = 50 # approximate_np
+KTMAX = 1000          # max_np
+XT = zeros((1000,3))  # points_array
+numpoints = 100 # approximate_np
 
 NPOYS = int(0.5+math.sqrt(1.*numpoints)) # one_dimension_np # sqrt_np
 

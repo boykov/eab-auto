@@ -33,25 +33,25 @@ else:
     KOKRM =  KT
 
 NVECT = zeros((KT,3),order = 'Fortran')
-NOKR = zeros((KT,KOKRM),int,order = 'Fortran')
+NOKR = zeros((KT,KOKRM),int32,order = 'Fortran')
 ALPHA = zeros((KT,3,3),order = 'Fortran')
 BETA = zeros((KT,3,3),order = 'Fortran')
 
 os.system("make nvcc")
 import nvcc
-# HPOYS=2.*LOCI[1]*nvcc.ep2(1.-(LOCI[0]/LOCI[1])**2)/NPOYS # parameter_h
-# RHSHA= RSHAP*HPOYS                                       # parameter_h
+HPOYS=2.*LOCI[1]*nvcc.ep2(1.-(LOCI[0]/LOCI[1])**2)/NPOYS # parameter_h
+RHSHA= RSHAP*HPOYS                                       # parameter_h
 
-# nvcc.nvecc(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM)
+nvcc.nvecc(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM)
 
 # # НАПОМИНАНИЕ: НЕСТЫКОВКА point.nvecc, nvcc.nvecc и ntg.integ
 # # RHSHA = 0
 # # block:
 # point.nvecc(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,numpoints)
 NVECH = zeros((KT,3),order = 'Fortran')
-point.nvecc1(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,numpoints,NVECH)
+# point.nvecc1(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,numpoints,NVECH)
 # # point.nvecc(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM)
-NOKR[0:KT,0:KOKRM] = NOKR[0:KT,0:KOKRM] + 1
+# NOKR[0:KT,0:KOKRM] = NOKR[0:KT,0:KOKRM] + 1
 # # exit()
 
 # print "ALPHA",ALPHA
@@ -71,7 +71,7 @@ os.system("make ntg")
 import ntg
 
 ntg.integ(DINTEG,DINTE1,MAXIK,ITIPF,ITIPF1,IDEJ,PARTEL,NOKR,RHSHA,XTout,BETA,ALPHA,AOBR,KREG,KGM,GREG,KFGM,XREG,ALPNY,BETNY,IKOLF,LOCI,EPSPOL,IELL,KOKRM,KT)
-# exit()
+exit()
 # NOKR[0:KT,0:KOKRM] = NOKR[0:KT,0:KOKRM] - 1
 # # point.integ(DINTEG,DINTE1,MAXIK,ITIPF,ITIPF1,IDEJ,PARTEL,NOKR,RHSHA,XTout,BETA,ALPHA,AOBR,KREG,KGM,GREG,KFGM,XREG,ALPNY,BETNY,IKOLF,LOCI,EPSPOL,IELL,KOKRM,KT)
 # point.integ(DINTEG,DINTE1,NOKR,RHSHA,XTout,AOBR,KREG,KGM,GREG,KFGM,XREG,ALPNY,BETNY,LOCI,IELL,KOKRM,KT)
