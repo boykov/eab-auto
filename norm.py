@@ -3,7 +3,7 @@
 
 import math
 
-path =  '/home/john/git/difwave/test/uuinit/'
+path =  '/home/eab/gitno/difwave/test/uuinit/'
 
 all = 0
 for k in range(1,4,1):
