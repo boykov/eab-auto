@@ -23,18 +23,18 @@ print "alpgl_init",alpgl_init
 print "alpgl",alpgl
 print "epst",EPST
 
-LOCIA = zeros((3),order = 'Fortran')
+# LOCIA = zeros((3),order = 'Fortran')
 
-LOCIA[0:3] = LOCI[0:3]
+# LOCIA[0:3] = LOCI[0:3]
 
-os.system("make pnt")
+# os.system("make pnt")
 
-import pnt
-KT = 0
-KT = pnt.point(KT,XT,LOCIA,KTMAX)
-print "KT=",KT
+# import pnt
+# KT = 0
+# KT = pnt.point(KT,XT,LOCIA,KTMAX)
+# print "KT=",KT
 
-# KT = point.point(KT,XT,KTMAX,LOCI,numpoints)
+KT = point.point(KT,XT,KTMAX,LOCI,numpoints)
 # KT = point.SamplingEllipsoide(LOCI,numpoints,XT)
 RHSHA = point.get_h(LOCI,NPOYS,RSHAP) # parameter_h
 
@@ -82,7 +82,7 @@ os.system("make ntg")
 import ntg
 
 ntg.integ(DINTEG,DINTE1,MAXIK,ITIPF,ITIPF1,IDEJ,PARTEL,NOKR,RHSHA,XTout,BETA,ALPHA,AOBR,KREG,KGM,GREG,KFGM,XREG,ALPNY,BETNY,IKOLF,LOCI,EPSPOL,IELL,KOKRM,KT)
-exit()
+
 # NOKR[0:KT,0:KOKRM] = NOKR[0:KT,0:KOKRM] - 1
 # # point.integ(DINTEG,DINTE1,MAXIK,ITIPF,ITIPF1,IDEJ,PARTEL,NOKR,RHSHA,XTout,BETA,ALPHA,AOBR,KREG,KGM,GREG,KFGM,XREG,ALPNY,BETNY,IKOLF,LOCI,EPSPOL,IELL,KOKRM,KT)
 # point.integ(DINTEG,DINTE1,NOKR,RHSHA,XTout,AOBR,KREG,KGM,GREG,KFGM,XREG,ALPNY,BETNY,LOCI,IELL,KOKRM,KT)
