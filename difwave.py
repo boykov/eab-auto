@@ -27,8 +27,8 @@ LOCIA = zeros((3),order = 'Fortran')
 
 LOCIA[0:3] = LOCI[0:3]
 
-
 os.system("make pnt")
+
 import pnt
 KT = 0
 KT = pnt.point(KT,XT,LOCIA,KTMAX)

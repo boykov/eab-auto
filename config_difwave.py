@@ -74,7 +74,7 @@ KTO=50    # max_neighbors
 
 KTMAX = 50000          # max_np
 XT = zeros((50000,3),order = 'Fortran')  # points_array
-numpoints = 100 # approximate_np
+numpoints = 8000 # approximate_np
 
 NPOYS = int(0.5+math.sqrt(1.*numpoints)) # one_dimension_np # sqrt_np
 
