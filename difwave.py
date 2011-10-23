@@ -31,9 +31,9 @@ os.system("make pnt")
 
 import pnt
 KT = 0
-KT = pnt.point(KT,XT,LOCIA,KTMAX)
+print "KTMAX=",KTMAX
+KT = pnt.point(KT,XT,LOCIA,numpoints,KTMAX)
 print "KT=",KT
-
 
 # KT = point.point(KT,XT,KTMAX,LOCI,numpoints)
 # KT = point.SamplingEllipsoide(LOCI,numpoints,XT)
@@ -45,6 +45,7 @@ else:
     KOKRM =  KT
 
 NVECT = zeros((KT,3),order = 'Fortran')
+NVECH = zeros((KT,3),order = 'Fortran')        
 NOKR = zeros((KT,KOKRM),int32,order = 'Fortran')
 ALPHA = zeros((KT,3,3),order = 'Fortran')
 BETA = zeros((KT,3,3),order = 'Fortran')
@@ -54,7 +55,8 @@ import nvcc
 HPOYS=2.*LOCI[1]*nvcc.ep2(1.-(LOCI[0]/LOCI[1])**2)/NPOYS # parameter_h
 RHSHA= RSHAP*HPOYS                                       # parameter_h
 
-nvcc.nvecc(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM)
+
+nvcc.nvecc(ALPHA,BETA,RHSHA,LOCI,AOBR,XT,NVECT,NVECH,RSHAP,NOKR,MINKM,KTO,KT,KTMAX,KOKRM)
 
 # # НАПОМИНАНИЕ: НЕСТЫКОВКА point.nvecc, nvcc.nvecc и ntg.integ
 # # RHSHA = 0
