@@ -160,6 +160,7 @@ def SamplingEllipsoide(axes,roughParts,points):
             currentEllipseParts = currentEllipseParts - 1
             # print "currentEllipseParts + 1",currentEllipseParts
         else:
+            pass
             # print "currentEllipseParts    ",currentEllipseParts
         EqualPartsEllipse(currentEllipseAxes[2],currentEllipseAxes[0],current_sin,current_cos,currentEllipseParts / 2)
         CompleteSym(currentEllipseParts,current_sin,current_cos)
@@ -218,6 +219,7 @@ def SamplingEllipsoideNew(axes,roughParts,points,phi,theta):
             currentEllipseParts = currentEllipseParts - 1
             # print "currentEllipseParts + 1",currentEllipseParts
         else:
+            pass
             # print "currentEllipseParts    ",currentEllipseParts
         EqualPartsEllipse(currentEllipseAxes[2],currentEllipseAxes[0],current_sin,current_cos,currentEllipseParts / 2)
         CompleteSym(currentEllipseParts,current_sin,current_cos)
