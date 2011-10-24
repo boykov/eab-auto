@@ -127,7 +127,7 @@ def EqualPartsEllipse(axisMin,axisMax,pointsY,pointsX,totalParts):
 
 def SamplingEllipsoide(axes,roughParts,points):
     """ Divide ellipsoid by _roughParts_. Return _totalParts_ < _roughParts_.
-    Also array _points_ store (x,y,z) points of sampling.
+    Also array _points_ store coordinates (x,y,z) points of sampling.
     axes[0] = Y ? 
     axes[1] = X ? 
     axes[2] = Z ? 
@@ -157,10 +157,10 @@ def SamplingEllipsoide(axes,roughParts,points):
         # этой формулой определяются максимальные значения p5 и p7
         currentEllipseParts = float(int(0.5 + 2.* ellipseParts * angle * axes[0] * ep2p(1.- (axes[2] / axes[0]) ** 2) / (axes[1] * ep2p(1.- (axes[0] / axes[1]) ** 2))))
         if int(currentEllipseParts) % 2 <> 0:
-            currentEllipseParts = currentEllipseParts + 1
-            print "currentEllipseParts + 1",currentEllipseParts
+            currentEllipseParts = currentEllipseParts - 1
+            # print "currentEllipseParts + 1",currentEllipseParts
         else:
-            print "currentEllipseParts    ",currentEllipseParts
+            # print "currentEllipseParts    ",currentEllipseParts
         EqualPartsEllipse(currentEllipseAxes[2],currentEllipseAxes[0],current_sin,current_cos,currentEllipseParts / 2)
         CompleteSym(currentEllipseParts,current_sin,current_cos)
 
@@ -215,10 +215,10 @@ def SamplingEllipsoideNew(axes,roughParts,points,phi,theta):
         # этой формулой определяются максимальные значения p5 и p7
         currentEllipseParts = float(int(0.5 + 2.* ellipseParts * angle * axes[0] * ep2p(1.- (axes[2] / axes[0]) ** 2) / (axes[1] * ep2p(1.- (axes[0] / axes[1]) ** 2))))
         if int(currentEllipseParts) % 2 <> 0:
-            currentEllipseParts = currentEllipseParts + 1
-            print "currentEllipseParts + 1",currentEllipseParts
+            currentEllipseParts = currentEllipseParts - 1
+            # print "currentEllipseParts + 1",currentEllipseParts
         else:
-            print "currentEllipseParts    ",currentEllipseParts
+            # print "currentEllipseParts    ",currentEllipseParts
         EqualPartsEllipse(currentEllipseAxes[2],currentEllipseAxes[0],current_sin,current_cos,currentEllipseParts / 2)
         CompleteSym(currentEllipseParts,current_sin,current_cos)
 
