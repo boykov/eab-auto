@@ -498,6 +498,7 @@ def DistanceMax(KT,pointsEllipsoide):
     return PM
 
 # TODO провести рефакторинг этих ужасных функций
+# TODO общий кусок с init_stroke (prepareStroke)
 def shiftValue(value,num,vn,i,ind,KTO,NTSHA,MINKV,INTER,mult,NVECT):
     ivalue = value
     inum = num
