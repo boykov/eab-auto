@@ -1,1 +1,1 @@
-~/data/src/maple14/bin/maple -q
+/home/eab/emacs/eev-current/eegchannel 1 /bin/bash
