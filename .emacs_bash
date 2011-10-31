@@ -6,7 +6,7 @@ export XEDITOR='/usr/bin/emacsclient'
 # export DOT_SAGE=~/.sage/
 # export PATH=$PATH:$SAGE_ROOT/local/bin
 # export LD_LIBRARY_PATH="$SAGE_ROOT/local/lib/openmpi:$SAGE_ROOT/local/lib/:"
-export scripting=$HOME/scripting
+export scripting=$HOME/data/src/scripting
 export PYTHONPATH=/home/eab/git/python:$scripting/src/tools:$scripting/scitools/bin:$scripting/scitools/lib:/usr/local/lib/python2.6/dist-packages/rope:/usr/local/lib/python2.6/dist-packages/ropemacs:/usr/local/lib/python2.6/dist-packages
 # :$SAGE_ROOT/local/bin:$SAGE_ROOT/local/lib/python2.6/site-packages/setuptools-0.6c8-py2.6.egg:$SAGE_ROOT/local/lib/python2.6/site-packages/SQLAlchemy-0.4.3-py2.6.egg:$SAGE_ROOT/local/bin:$SAGE_ROOT/local/lib/python:$SAGE_ROOT/local/lib/python25.zip:$SAGE_ROOT/local/lib/python2.6/plat-linux2:$SAGE_ROOT/local/lib/python2.6/lib-tk:$SAGE_ROOT/local/lib/python2.6/lib-dynload:$SAGE_ROOT/local/lib/python2.6/site-packages:$SAGE_ROOT/local/lib/python2.6/site-packages/IPython/Extensions
 PATH=$PATH:$scripting/src/tools:$scripting/scitools/bin
