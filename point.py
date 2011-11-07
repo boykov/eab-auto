@@ -77,7 +77,7 @@ def NeighborsMax():
     return 50
 
 def PartsOneDimension(totalParts):
-    return int(0.5+math.sqrt(totalParts))
+    return int(0.5+math.sqrt(totalParts)) - 3
 
 def DivideOne(eccentricity,parts,angle):
     """Divide 1 to _parts_ portions with some _eccentricity_ and save to _angle_"""
