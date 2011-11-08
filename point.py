@@ -469,10 +469,10 @@ def PrepareStroke(numberPointsEllipsoide,KTO,numberPointsMax,NTSHA,INTER,NVECT,N
     tmpVector = zeros(3)
     for i in range(0,numberPointsEllipsoide,1):
         index = list(NTSHA[i,:]).index(-1) # get first index of element -1 in NTSHA
-        lengthVectorSquare = 0.
-        tmpVector[:] = 0
+        
+        # lengthVectorSquare = 0.
+        # tmpVector[:] = 0
         # for k in range(0,KTO,1):
-
         #     # # TODO сделать эти условия более читабельными при помощи логических переменных
         #     # if (index < numberPointsMax):
         #     #     if (k > numberPointsMax):
@@ -488,11 +488,10 @@ def PrepareStroke(numberPointsEllipsoide,KTO,numberPointsMax,NTSHA,INTER,NVECT,N
         #     # получается, что частично зацепляются и кандидаты из NTSHA
         #     tmpVector[:] = tmpVector[:] + NVECT[candidate,:]
         mask = array(NTSHA[i,0:index])
-        print "mask", mask
-        tmpVector[0] = sum(ma.choose(mask,NVECT[:,0]))
-        tmpVector[1] = sum(ma.choose(mask,NVECT[:,1]))
-        tmpVector[2] = sum(ma.choose(mask,NVECT[:,2]))
-        lengthVectorSquare = lengthVectorSquare + dot(tmpVector[:], tmpVector[:])
+        tmpVector[:] = map(lambda x: sum(NVECT[mask,x]),[0,1,2]) # fortran: array((/1,3/))
+        # tmpVector[1] = sum(NVECT[mask,1])
+        # tmpVector[2] = sum(NVECT[mask,2])        
+        lengthVectorSquare = dot(tmpVector[:], tmpVector[:])
 
 
         if lengthVectorSquare <> 0.:
@@ -520,33 +519,42 @@ def shiftValue(value,num,vn,i,ind,KTO,NTSHA,MINKV,INTER,mult,NVECT):
     ivalue = value
     inum = num
     ivn = vn
-    for k in range(0,KTO,1):
+    # for k in range(0,KTO,1):
         
-        # см. PrepareStroke
-        # if (ind < MINKV):
-        #     if (k > MINKV):
-        #         break
-        #     candidate = INTER[i,k]
-        #     # candidate = NTSHA[i,k] # получается, что INTER не нужен?
-        # else:
-        #     candidate = NTSHA[i,k]
+    #     # см. PrepareStroke
+    #     # if (ind < MINKV):
+    #     #     if (k > MINKV):
+    #     #         break
+    #     #     candidate = INTER[i,k]
+    #     #     # candidate = NTSHA[i,k] # получается, что INTER не нужен?
+    #     # else:
+    #     #     candidate = NTSHA[i,k]
         
-        candidate = NTSHA[i,k]
+    #     candidate = NTSHA[i,k]
         
-        if candidate == (-1):
-            break
-        ivn = ivn + 1
+    #     if candidate == (-1):
+    #         break
+    #     ivn = ivn + 1
             
-        # VS = 0.
-        # for j in range(0,3,1):
-        #     VS = VS + mult[j] * NVECT[candidate,j]
+    #     # VS = 0.
+    #     # for j in range(0,3,1):
+    #     #     VS = VS + mult[j] * NVECT[candidate,j]
 
-        VS = dot(mult[:],NVECT[candidate,:])
+    #     VS = dot(mult[:],NVECT[candidate,:])
 
-        # finding minimum
-        if VS < ivalue:
-            ivalue = VS
-            inum = candidate
+    #     # finding minimum
+    #     if VS < ivalue:
+    #         ivalue = VS
+    #         inum = candidate
+
+    index = list(NTSHA[i,:]).index(-1)
+    mask = array(NTSHA[i,0:index])
+    VSa = zeros((index))
+    VSa[0:index] = mult[0] * NVECT[mask,0] + mult[1] * NVECT[mask,1] + mult[2] * NVECT[mask,2]
+    VS = VSa.min()
+    inum = mask[list(VSa).index(VS)]
+    ivn = index
+    ivalue = VS
             
     return ivalue,inum,ivn
 
@@ -603,6 +611,84 @@ def NormalVectorStroke(normalVectors,pointsEllipsoide,numberPointsEllipsoide,num
             
     return
 
+def NormalVectorStrokeNew(normalVectors,pointsEllipsoide,numberPointsEllipsoide,numbersCloseEnvirons,normal_vectors_stroke):
+    """
+       this function computes normal_vectors_stroke (n')
+    """
+    max_neighbors = NeighborsMax()
+    lengthMinimums = LengthMinimumsMax() - 1
+    
+    PM = DistanceMax(numberPointsEllipsoide,pointsEllipsoide)
+
+    # Найти набор точек, по которым ведется интерполяция
+    points_interpolation  = zeros((numberPointsEllipsoide,LengthMinimumsMax()),int,order = 'Fortran')
+    points_interpolation[0:numberPointsEllipsoide,0:LengthMinimumsMax()] = -1
+    length = lengthMinimums - 1
+    GetPointsInterpolation(PM,length,numberPointsEllipsoide,pointsEllipsoide,points_interpolation)
+
+
+    tmpVector = zeros(3)        
+    normal_vectors_stroke[0:numberPointsEllipsoide,0:3]=0.
+
+    # задать начальные значения для n'
+    # PrepareStroke(numberPointsEllipsoide,max_neighbors,lengthMinimums,numbersCloseEnvirons,points_interpolation,normalVectors,normal_vectors_stroke)
+    
+    for i in range(0,numberPointsEllipsoide,1):
+        index = list(numbersCloseEnvirons[i,:]).index(-1)
+        mask = array(numbersCloseEnvirons[i,0:index])
+        tmpVector[:] = map(lambda x: sum(normalVectors[mask,x]),[0,1,2])
+        normal_vectors_stroke[i,0:3] = tmpVector[0:3] / dot(tmpVector[:], tmpVector[:])
+    
+    for i in range(0,numberPointsEllipsoide,1):
+        ind = list(numbersCloseEnvirons[i,:]).index(-1)
+        candidate1,index_candidate1,number_candidate1 = shiftValue(1.0,0,0.,i,ind,max_neighbors,numbersCloseEnvirons,lengthMinimums,points_interpolation,normal_vectors_stroke[i,:],normalVectors)
+        
+        # index = list(numbersCloseEnvirons[i,:]).index(-1)
+        # mask = array(numbersCloseEnvirons[i,0:index])
+        # VSa = zeros((index))
+        # VSa[0:index] = normal_vectors_stroke[i,0] * normalVectors[mask,0] + normal_vectors_stroke[i,1] * normalVectors[mask,1] + normal_vectors_stroke[i,2] * normalVectors[mask,2]
+        # VS = VSa.min()
+        # number_candidate1 = mask[list(VSa).index(VS)]
+        # index_candidate1 = index
+        # candidate1 = VS
+
+        tmpVector[0:3] = normal_vectors_stroke[i,0:3]
+
+        count = 0
+        while (count < 100):
+            count = count + 1
+            candidate2,index_candidate2,number_candidate2 = shiftValue(1.,0,0.,i,ind,max_neighbors,numbersCloseEnvirons,lengthMinimums,points_interpolation,tmpVector,normalVectors)
+            
+            # index = list(numbersCloseEnvirons[i,:]).index(-1)
+            # mask = array(numbersCloseEnvirons[i,0:index])
+            # VSa = zeros((index))
+            # VSa[0:index] = tmpVector[0] * normalVectors[mask,0] + tmpVector[1] * normalVectors[mask,1] + tmpVector[2] * normalVectors[mask,2]
+            # VS = VSa.min()
+            # number_candidate2 = mask[list(VSa).index(VS)]
+            # index_candidate2 = index
+            # candidate2 = VS
+
+            # if candidate2 - candidate1 >= 0.0: # finding maximum
+            if candidate2 - candidate1 >=- 1.0e-17: # finding maximum
+                candidate1 = candidate2
+                if number_candidate2 <> 0.:
+                    number_candidate2 = 1./ number_candidate2
+
+                tmp = 0.
+                for j in range(0,3,1):
+                    tmpVector[j] = tmpVector[j] + number_candidate2 * normalVectors[index_candidate2,j]
+                    tmp = tmp + tmpVector[j] * tmpVector[j]
+                if tmp <> 0.:
+                    tmp = 1./ math.sqrt(tmp)
+                tmpVector[0:3] = tmp * tmpVector[0:3]
+
+        normal_vectors_stroke[i,0:3] = tmpVector[0:3]
+
+        if candidate1 < 0.:
+            print "ОКРЕСТНОСТЬ ТОЧКИ",i,"НЕЛЬЗЯ ОДНОЗНАЧНО СПРОЕКТИРОВАТЬ НА ВЫБРАННУЮ ПЛОСКОСТЬ, ВОЗМОЖНО, ЕЕ СЛЕДУЕТ УМЕНЬШИТЬ"
+            
+    return
+
 
 # TODO Внимание! Даже изменив здесь 1./(...) на просто X[0:3] / (...)
 # получаем существенное расхождение в знаках, например в albet.
@@ -633,7 +719,8 @@ def nvecc1(ALPHA,BETA,RHSHA,axes,aobr,xt,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,num
     FilterElements(KT,  h_2,numbersCloseEnvirons,axes,xt,checkH)
 
     # compute normal vectors stroke (n')
-    NormalVectorStroke(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
+    # NormalVectorStroke(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
+    NormalVectorStrokeNew(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
 
     # compute matrix α for change coordinate system from 0x_1x_2x_3 to 0y_1y_2y_3
     # also auxiliary matrix BETA = α^(-1)
