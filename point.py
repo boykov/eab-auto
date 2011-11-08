@@ -413,34 +413,35 @@ def FilterElements(KT,h,NKR,axes,pointsEllipsoide,condition):
     # tmp = zeros(KT)
     # maximums = zeros(KT)
     # minumums = zeros(KT)
-    for i in range(0,KT,1):
-        k = 0
-        for j in range(0,KT,1):
-            candidate = dpair(pointsEllipsoide,i,j)
-            # tmp[j] = candidate
-            if condition(i,j,h,candidate):
-                NKR[i,k] = NKR[i,k] + j + 1
-                k = k + 1
-                
-    # lst = []
+
     # for i in range(0,KT,1):
-    #     lst.append([])
+    #     k = 0
     #     for j in range(0,KT,1):
     #         candidate = dpair(pointsEllipsoide,i,j)
     #         # tmp[j] = candidate
     #         if condition(i,j,h,candidate):
-    #             lst[i].append(j)
-    #     # maximums[i] = tmp.max()
-    #     # minimums[i] = tmp.min()
-    # lenghts = map(lambda x:len(x),lst)
-    # # maxim = maximums.max()
-    # # minim = minimums.min()    
-    # KOKRM = array(lenghts).max() + 1 # get maximum lenghts
-    # tmp = zeros((KT,KOKRM),int,order = 'fortran') # allocate array
-    # for i in range(0,KT,1):
-    #     l = len(lst[i])
-    #     tmp[i,0:l] = lst[i][0:l]
-    #     NOKR[i,0:l] = tmp[i,0:l]
+    #             NKR[i,k] = NKR[i,k] + j + 1
+    #             k = k + 1
+                
+    lst = []
+    for i in range(0,KT,1):
+        lst.append([])
+        for j in range(0,KT,1):
+            candidate = dpair(pointsEllipsoide,i,j)
+            # tmp[j] = candidate
+            if condition(i,j,h,candidate):
+                lst[i].append(j)
+        # maximums[i] = tmp.max()
+        # minimums[i] = tmp.min()
+    lenghts = map(lambda x:len(x),lst)
+    # maxim = maximums.max()
+    # minim = minimums.min()    
+    KOKRM = array(lenghts).max() + 1 # get maximum lenghts
+    tmp = zeros((KT,KOKRM),int,order = 'fortran') # allocate array
+    for i in range(0,KT,1):
+        l = len(lst[i])
+        tmp[i,0:l] = lst[i][0:l]
+        NKR[i,0:l] = tmp[i,0:l]
 
 def GetPointsInterpolation(distanceMax,numberPointsMax,numberPointsEllipsoide,pointsEllipsoide,INTER):
     # C	ВЫЧИСЛЕНИЕ НОМЕРОВ ТОЧЕК, ПО КОТОРЫМ БУДЕМ ВЕСТИ ИНТЕРПОЛЯЦИЮ    
