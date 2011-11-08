@@ -526,12 +526,13 @@ def shiftValue(value,num,vn,i,ind,KTO,NTSHA,MINKV,INTER,mult,NVECT):
             break
         ivn = ivn + 1
             
-        VS = 0.
-        for j in range(0,3,1):
-            VS = VS + mult[j] * NVECT[candidate,j]
+        # VS = 0.
+        # for j in range(0,3,1):
+        #     VS = VS + mult[j] * NVECT[candidate,j]
 
-        # VS = dot(NVECH[i,:],NVECT[candidate,:])
-            
+        VS = dot(mult[:],NVECT[candidate,:])
+
+        # finding minimum
         if VS < ivalue:
             ivalue = VS
             inum = candidate
@@ -615,10 +616,8 @@ def nvecc1(ALPHA,BETA,RHSHA,axes,aobr,xt,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,num
     FilterElements(KT,4 * h_2,NOKR,axes,xt,checkH)
 
     # get numbersCloseEnvirons (close neighbors)
-    # numbersCloseEnvirons = zeros((KT,NeighborsMax()),int,order = 'Fortran')
-    # numbersCloseEnvirons[0:KT,0:NeighborsMax()] = -1
-    numbersCloseEnvirons = zeros((KT,KT),int,order = 'Fortran')
-    numbersCloseEnvirons[0:KT,0:KT] = -1
+    numbersCloseEnvirons = zeros((KT,NeighborsMax()),int,order = 'Fortran')
+    numbersCloseEnvirons[0:KT,0:NeighborsMax()] = -1
     FilterElements(KT,  h_2,numbersCloseEnvirons,axes,xt,checkH)
 
     # compute normal vectors stroke (n')
