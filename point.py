@@ -332,7 +332,7 @@ def ell(axisMin,axisMax,outSin,outCos,numPoints,outFi,isone):
     return 0
 
 def dpair(xt,i,j):
-    return dot(xt[i,:] - xt[j,:],xt[i,:] - xt[j,:])
+    return (dot(xt[i,:] - xt[j,:],xt[i,:] - xt[j,:]))
 
 def point(kt,xt,ktmax,a,numpoints):
     n2    = int(0.5+math.sqrt(numpoints))
@@ -407,31 +407,40 @@ def checkH(i,j,h,c):
     return ((i == j) or (c < h))
 
 # TODO сделать единообразно
-def FilterElements(KT,h,NOKR,axes,pointsEllipsoide,condition):
+def FilterElements(KT,h,NKR,axes,pointsEllipsoide,condition):
     # C	ОТЫСКАНИЕ НОСИТЕЛЕЙ КАЖДОЙ ШАПОЧКИ И НОСИТЕЛЕЙ ШАПОЧЕК,
     # C	ИМЕЮЩИХ ОБЩИЕ ТОЧКИ С НОСИТЕЛЕМ ДАННОЙ ШАПОЧКИ
     # tmp = zeros(KT)
     # maximums = zeros(KT)
-    # minumums = zeros(KT)    
-    lst = []
+    # minumums = zeros(KT)
     for i in range(0,KT,1):
-        lst.append([])
+        k = 0
         for j in range(0,KT,1):
             candidate = dpair(pointsEllipsoide,i,j)
             # tmp[j] = candidate
             if condition(i,j,h,candidate):
-                lst[i].append(j)
-        # maximums[i] = tmp.max()
-        # minimums[i] = tmp.min()
-    lenghts = map(lambda x:len(x),lst)
-    # maxim = maximums.max()
-    # minim = minimums.min()    
-    KOKRM = array(lenghts).max() # get maximum lenghts
-    tmp = zeros((KT,KOKRM),int,order = 'fortran') # allocate array
-    for i in range(0,KT,1):
-        l = len(lst[i])
-        tmp[i,0:l] = lst[i][0:l]
-        NOKR[i,0:l] = tmp[i,0:l]
+                NKR[i,k] = NKR[i,k] + j + 1
+                k = k + 1
+                
+    # lst = []
+    # for i in range(0,KT,1):
+    #     lst.append([])
+    #     for j in range(0,KT,1):
+    #         candidate = dpair(pointsEllipsoide,i,j)
+    #         # tmp[j] = candidate
+    #         if condition(i,j,h,candidate):
+    #             lst[i].append(j)
+    #     # maximums[i] = tmp.max()
+    #     # minimums[i] = tmp.min()
+    # lenghts = map(lambda x:len(x),lst)
+    # # maxim = maximums.max()
+    # # minim = minimums.min()    
+    # KOKRM = array(lenghts).max() + 1 # get maximum lenghts
+    # tmp = zeros((KT,KOKRM),int,order = 'fortran') # allocate array
+    # for i in range(0,KT,1):
+    #     l = len(lst[i])
+    #     tmp[i,0:l] = lst[i][0:l]
+    #     NOKR[i,0:l] = tmp[i,0:l]
 
 def GetPointsInterpolation(distanceMax,numberPointsMax,numberPointsEllipsoide,pointsEllipsoide,INTER):
     # C	ВЫЧИСЛЕНИЕ НОМЕРОВ ТОЧЕК, ПО КОТОРЫМ БУДЕМ ВЕСТИ ИНТЕРПОЛЯЦИЮ    
@@ -605,8 +614,10 @@ def nvecc1(ALPHA,BETA,RHSHA,axes,aobr,xt,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,num
     FilterElements(KT,4 * h_2,NOKR,axes,xt,checkH)
 
     # get numbersCloseEnvirons (close neighbors)
-    numbersCloseEnvirons = zeros((KT,NeighborsMax()),int,order = 'Fortran')
-    numbersCloseEnvirons[0:KT,0:NeighborsMax()] = -1
+    # numbersCloseEnvirons = zeros((KT,NeighborsMax()),int,order = 'Fortran')
+    # numbersCloseEnvirons[0:KT,0:NeighborsMax()] = -1
+    numbersCloseEnvirons = zeros((KT,KT),int,order = 'Fortran')
+    numbersCloseEnvirons[0:KT,0:KT] = -1
     FilterElements(KT,  h_2,numbersCloseEnvirons,axes,xt,checkH)
 
     # compute normal vectors stroke (n')
