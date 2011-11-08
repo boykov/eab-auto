@@ -470,23 +470,30 @@ def PrepareStroke(numberPointsEllipsoide,KTO,numberPointsMax,NTSHA,INTER,NVECT,N
     for i in range(0,numberPointsEllipsoide,1):
         index = list(NTSHA[i,:]).index(-1) # get first index of element -1 in NTSHA
         lengthVectorSquare = 0.
-        for j in range(0,3,1):
-            tmpVector[j] = 0
-            for k in range(0,KTO,1):
-                
-                # TODO сделать эти условия более читабельными при помощи логических переменных
-                if (index < numberPointsMax):
-                    if (k > numberPointsMax):
-                        break
-                    candidate = INTER[i,k]
-                else:
-                    candidate = NTSHA[i,k]
-                    
-                if candidate == -1:
-                    break
-                # получается, что частично зацепляются и кандидаты из NTSHA
-                tmpVector[j] = tmpVector[j] + NVECT[candidate,j]
-            lengthVectorSquare = lengthVectorSquare + tmpVector[j] * tmpVector[j]
+        tmpVector[:] = 0
+        # for k in range(0,KTO,1):
+
+        #     # # TODO сделать эти условия более читабельными при помощи логических переменных
+        #     # if (index < numberPointsMax):
+        #     #     if (k > numberPointsMax):
+        #     #         break
+        #     #     candidate = INTER[i,k]
+        #     # else:
+        #     #     candidate = NTSHA[i,k]
+
+        #     candidate = NTSHA[i,k]
+            
+        #     if candidate == -1:
+        #         break
+        #     # получается, что частично зацепляются и кандидаты из NTSHA
+        #     tmpVector[:] = tmpVector[:] + NVECT[candidate,:]
+        mask = array(NTSHA[i,0:index])
+        print "mask", mask
+        tmpVector[0] = sum(ma.choose(mask,NVECT[:,0]))
+        tmpVector[1] = sum(ma.choose(mask,NVECT[:,1]))
+        tmpVector[2] = sum(ma.choose(mask,NVECT[:,2]))
+        lengthVectorSquare = lengthVectorSquare + dot(tmpVector[:], tmpVector[:])
+
 
         if lengthVectorSquare <> 0.:
             x = 1./ math.sqrt(lengthVectorSquare)
@@ -514,15 +521,18 @@ def shiftValue(value,num,vn,i,ind,KTO,NTSHA,MINKV,INTER,mult,NVECT):
     inum = num
     ivn = vn
     for k in range(0,KTO,1):
+        
         # см. PrepareStroke
-        if (ind < MINKV):
-            if (k > MINKV):
-                break
-            candidate = INTER[i,k]
-            # candidate = NTSHA[i,k] # получается, что INTER не нужен?
-        else:
-            candidate = NTSHA[i,k]
-            
+        # if (ind < MINKV):
+        #     if (k > MINKV):
+        #         break
+        #     candidate = INTER[i,k]
+        #     # candidate = NTSHA[i,k] # получается, что INTER не нужен?
+        # else:
+        #     candidate = NTSHA[i,k]
+        
+        candidate = NTSHA[i,k]
+        
         if candidate == (-1):
             break
         ivn = ivn + 1
@@ -572,6 +582,7 @@ def NormalVectorStroke(normalVectors,pointsEllipsoide,numberPointsEllipsoide,num
         while (count < 100):
             count = count + 1
             candidate2,index_candidate2,number_candidate2 = shiftValue(1.,0,0.,i,ind,max_neighbors,numbersCloseEnvirons,lengthMinimums,points_interpolation,tmpVector,normalVectors)
+            # if candidate2 - candidate1 >= 0.0: # finding maximum
             if candidate2 - candidate1 >=- 1.0e-17: # finding maximum
                 candidate1 = candidate2
                 if number_candidate2 <> 0.:
