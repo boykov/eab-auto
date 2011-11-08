@@ -519,6 +519,7 @@ def shiftValue(value,num,vn,i,ind,KTO,NTSHA,MINKV,INTER,mult,NVECT):
             if (k > MINKV):
                 break
             candidate = INTER[i,k]
+            # candidate = NTSHA[i,k] # получается, что INTER не нужен?
         else:
             candidate = NTSHA[i,k]
             
@@ -571,7 +572,7 @@ def NormalVectorStroke(normalVectors,pointsEllipsoide,numberPointsEllipsoide,num
         while (count < 100):
             count = count + 1
             candidate2,index_candidate2,number_candidate2 = shiftValue(1.,0,0.,i,ind,max_neighbors,numbersCloseEnvirons,lengthMinimums,points_interpolation,tmpVector,normalVectors)
-            if candidate2 - candidate1 >=- 1.0e-17:
+            if candidate2 - candidate1 >=- 1.0e-17: # finding maximum
                 candidate1 = candidate2
                 if number_candidate2 <> 0.:
                     number_candidate2 = 1./ number_candidate2
