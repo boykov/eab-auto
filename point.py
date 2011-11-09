@@ -619,20 +619,15 @@ def NormalVectorStrokeNew(normalVectors,pointsEllipsoide,numberPointsEllipsoide,
 
     tmpVector = zeros(3)
 
-    # задать начальные значения для n'
-    
     for i in range(0,numberPointsEllipsoide,1):
         index = list(numbersCloseEnvirons[i,:]).index(-1)
         mask = array(numbersCloseEnvirons[i,0:index])
+
+        # задать начальные значения для n'
         tmpVector[:] = map(lambda x: sum(normalVectors[mask,x]),[0,1,2])
         normal_vectors_stroke[i,0:3] = tmpVector[0:3] * (1.0 / math.sqrt(dot(tmpVector[:], tmpVector[:])))
-
-    for i in range(0,numberPointsEllipsoide,1):
-
-        tmpVector[0:3] = normal_vectors_stroke[i,0:3]
         
-        index = list(numbersCloseEnvirons[i,:]).index(-1)
-        mask = array(numbersCloseEnvirons[i,0:index])
+        tmpVector[0:3] = normal_vectors_stroke[i,0:3]
         VSa = zeros((index))
         
         count = 0
@@ -641,8 +636,8 @@ def NormalVectorStrokeNew(normalVectors,pointsEllipsoide,numberPointsEllipsoide,
 
             VSa[0:index] = tmpVector[0] * normalVectors[mask,0] + tmpVector[1] * normalVectors[mask,1] + tmpVector[2] * normalVectors[mask,2]
             VS = VSa.min()
-            index_candidate2 = mask[list(VSa).index(VS)]
-            number_candidate2 = index
+            index_candidate = mask[list(VSa).index(VS)]
+            number_candidates = index
             candidate2 = VS
 
             if count == 1:
@@ -651,11 +646,11 @@ def NormalVectorStrokeNew(normalVectors,pointsEllipsoide,numberPointsEllipsoide,
             # if candidate2 - candidate1 >= 0.0: # finding maximum
             if candidate2 - candidate1 >=- 1.0e-17: # finding maximum
                 candidate1 = candidate2
-                if number_candidate2 <> 0.:
-                    number_candidate2 = 1./ number_candidate2
+                if number_candidates <> 0.:
+                    number_candidates = 1./ number_candidates
 
                 # for j in range(0,3,1):
-                tmpVector[:] = tmpVector[:] + number_candidate2 * normalVectors[index_candidate2,:]
+                tmpVector[:] = tmpVector[:] + number_candidates * normalVectors[index_candidate,:]
                 tmp = 1./ math.sqrt(dot(tmpVector[:] , tmpVector[:]))
                 tmpVector[0:3] = tmpVector[0:3] * tmp
 
@@ -698,8 +693,8 @@ def nvecc1(ALPHA,BETA,RHSHA,axes,aobr,xt,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,num
     # compute normal vectors stroke (n')
     # получается, что уже для 1000 точек было отклонение от
     # прежней версии fortran на -0.02...
-    NormalVectorStroke(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
-    # NormalVectorStrokeNew(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
+    # NormalVectorStroke(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
+    NormalVectorStrokeNew(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
 
     # compute matrix α for change coordinate system from 0x_1x_2x_3 to 0y_1y_2y_3
     # also auxiliary matrix BETA = α^(-1)
