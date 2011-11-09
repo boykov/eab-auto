@@ -481,7 +481,7 @@ def PrepareStroke(numberPointsEllipsoide,KTO,numberPointsMax,NTSHA,INTER,NVECT,N
             else:
                 candidate = NTSHA[i,k]
 
-            candidate = NTSHA[i,k]
+            # candidate = NTSHA[i,k]
             
             if candidate == -1:
                 break
@@ -529,7 +529,7 @@ def shiftValue(value,num,vn,i,ind,KTO,NTSHA,MINKV,INTER,mult,NVECT):
         else:
             candidate = NTSHA[i,k]
         
-        candidate = NTSHA[i,k]
+        # candidate = NTSHA[i,k]
         
         if candidate == (-1):
             break
@@ -629,6 +629,7 @@ def NormalVectorStrokeNew(normalVectors,pointsEllipsoide,numberPointsEllipsoide,
         VSa = zeros((index))
         
         count = 0
+        number_candidates = 0
         while (count < 100):
             count = count + 1
 
