@@ -77,7 +77,7 @@ def NeighborsMax():
     return 50
 
 def PartsOneDimension(totalParts):
-    return int(0.5+math.sqrt(totalParts)) - 3
+    return int(0.5+math.sqrt(totalParts))
 
 def DivideOne(eccentricity,parts,angle):
     """Divide 1 to _parts_ portions with some _eccentricity_ and save to _angle_"""
@@ -698,8 +698,8 @@ def nvecc1(ALPHA,BETA,RHSHA,axes,aobr,xt,NVECT,RSHAP,NOKR,MINKM,KTO,KT,KOKRM,num
     # compute normal vectors stroke (n')
     # получается, что уже для 1000 точек было отклонение от
     # прежней версии fortran на -0.02...
-    # NormalVectorStroke(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
-    NormalVectorStrokeNew(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
+    NormalVectorStroke(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
+    # NormalVectorStrokeNew(NVECT,xt,KT,numbersCloseEnvirons,NVECH)
 
     # compute matrix α for change coordinate system from 0x_1x_2x_3 to 0y_1y_2y_3
     # also auxiliary matrix BETA = α^(-1)
