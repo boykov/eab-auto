@@ -614,8 +614,6 @@ def NormalVectorStrokeNew(normalVectors,pointsEllipsoide,numberPointsEllipsoide,
     """
        this function computes normal_vectors_stroke (n')
     """
-    max_neighbors = NeighborsMax()
-    lengthMinimums = LengthMinimumsMax() - 1
 
     tmpVector = zeros(3)
 
