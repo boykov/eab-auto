@@ -16,4 +16,5 @@ then
     echo All done.;
 else
     echo Fix and redo.;
+    # TODO put here alert message!
 fi
