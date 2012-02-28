@@ -11,5 +11,7 @@ do
     git ls-files --deleted -z | xargs -0 git rm >/dev/null 2>&1
 # Add new files
     git add . >/dev/null 2>&1
-    git commit -m "$(date)" --author='Evgeny Boykov <artscan@list.ru>'
+    git config --global user.name "Evgeny Boykov"
+    git config --global user.email artscan@list.ru
+    git commit -m "$(date)"
 done
