@@ -14,4 +14,5 @@ do
     # git config --global user.name "Evgeny Boykov"
     # git config --global user.email artscan@list.ru
     git commit -m "$(date)"
+    git status | grep -qF 'working directory clean'
 done
