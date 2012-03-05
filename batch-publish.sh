@@ -8,4 +8,4 @@ export EMACS_SERVER_NAME=serverN
 # /usr/local/bin/emacs -Q --batch -l $DOTPATH --eval "(org-publish-project \"html\" t)"
 # /usr/local/bin/emacs -Q --batch -l $DOTPATH --eval "(eab/send-csum)"
 
-emacsclient -s $EMACS_SERVER_NAME -c --eval "(progn (org-publish-project \"html\" t) (eab/send-csum) (delete-frame))"
+emacsclient -s $EMACS_SERVER_NAME -c -d 0:0 --eval "(progn (org-publish-project \"html\" t) (eab/send-csum) (delete-frame))"
