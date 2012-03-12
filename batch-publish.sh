@@ -9,4 +9,4 @@ export DISPLAY=:0.0
 # /usr/local/bin/emacs -Q --batch -l $DOTPATH --eval "(org-publish-project \"html\" t)"
 # /usr/local/bin/emacs -Q --batch -l $DOTPATH --eval "(eab/send-csum)"
 
-emacsclient -s $EMACS_SERVER_NAME -c --eval "(progn (org-publish-project \"html\" t) (eab/send-csum))" --eval "(delete-frame)"
+emacsclient -s $EMACS_SERVER_NAME -c --eval "(progn (org-publish-project \"html\" t) (eab/send-csum))" --eval "(execute-kbd-macro \"\C-x50\")"
