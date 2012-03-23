@@ -1,1 +1,1 @@
-/home/eab/emacs/eev-current/eegchannel 1 /bin/bash
+/usr/bin/ipython 
