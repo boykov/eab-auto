@@ -24,16 +24,16 @@ onestring = {
     }
 
 f90replace =    {
-    "sqrt"     : "asqrt",
-    "'"   : "",
-    "δ"   : "dn",
-    "kron_delta"   : "dn",    
-    "a("  : "axes(",
-    "βv"       : "bt",    
-    "β"       : "bt",
-    "φ"       : "ph",
-    "ρ"       : "rh",
-    "σ"       : "sg"    
+    "sqrt"       : "asqrt",
+    "'"          : "",
+    "δ"          : "dn",
+    "kron_delta" : "dn",    
+    "a("         : "axes(",
+    "βv"         : "bt",    
+    "β"          : "bt",
+    "φ"          : "ph",
+    "ρ"          : "rh",
+    "σ"          : "sigmaij(i,j)"    
     }
 
 if __name__ == "__main__":
@@ -54,11 +54,10 @@ if __name__ == "__main__":
     values = open(maxima_form).read()
 
     ar = strtr(strtr(values,onestring),f90replace).split("\n")
-    # dct = dict([['jacobian' , ar[0]], ['x1' , ar[1]], ['x2' , ar[2]], ['x3' , ar[3]], ['beta' , ar[4]]])
-    dct = dict([['jacobian' , ar[0]], ['x' , ar[1]], ['beta' , ar[2]]])    
+
+    dct = dict([['jacobian' , ar[0]],
+                ['x' , ar[1]],
+                ['beta' , ar[2]]])    
     
-    # maple.execute('currentdir(\"/home/eab/git/difwave/namelib\")')
-    # maple.read(maple_form)
-    # maple_output = eval(maple.execute('output;'))
     print pattern % dct
 
