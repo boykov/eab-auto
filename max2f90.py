@@ -8,6 +8,7 @@
 import optparse
 import sys
 import os
+import re
 
 def strtr(text, dic): 
     """ Replace in 'text' all occurences of any key in the given
@@ -55,9 +56,16 @@ if __name__ == "__main__":
 
     ar = strtr(strtr(values,onestring),f90replace).split("\n")
 
-    dct = dict([['jacobian' , ar[0]],
-                ['x' , ar[1]],
-                ['beta' , ar[2]]])    
+    r = re.compile(r'\%\(.*\)s')
+
+    names = map(lambda x: x[2:-2],r.findall(pattern))
+    names.reverse()
+
+    dct = dict(map(lambda i: [names[i],ar[i]],[0,1,2]))
+
+    # dct = dict([['jacobian' , ar[0]],
+    #             ['x' , ar[1]],
+    #             ['beta' , ar[2]]])    
     
-    print pattern % dct
+    # print pattern % dct
 
