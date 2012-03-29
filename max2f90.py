@@ -34,7 +34,9 @@ f90replace =    {
     "β"          : "bt",
     "φ"          : "ph",
     "ρ"          : "rh",
-    "σ"          : "sigmaij(i,j)"    
+    "σ"          : "sigmaij(i,j)",
+    "%pi"        : "PI",
+    "erf"        : "aerf"
     }
 
 if __name__ == "__main__":
@@ -61,11 +63,13 @@ if __name__ == "__main__":
     names = map(lambda x: x[2:-2],r.findall(pattern))
     names.reverse()
 
-    dct = dict(map(lambda i: [names[i],ar[i]],[0,1,2]))
+    dct = dict(map(lambda i: [names[i],ar[i]],
+                   map(lambda x: names.index(x),
+                       names)))
 
     # dct = dict([['jacobian' , ar[0]],
     #             ['x' , ar[1]],
     #             ['beta' , ar[2]]])    
     
-    # print pattern % dct
+    print pattern % dct
 
