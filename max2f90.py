@@ -36,7 +36,7 @@ f90replace =    {
     "ρ"          : "rh",
     "σ"          : "sigmaij(i,j)",
     "%pi"        : "PI",
-    "w"        : "cerfe"
+    "w"          : "cerfe"
     }
 
 if __name__ == "__main__":
