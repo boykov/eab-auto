@@ -1,1 +1,1 @@
-maxima -q
+/home/eab/emacs/eev-current/eegchannel 2 /bin/bash
