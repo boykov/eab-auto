@@ -4,6 +4,7 @@
 import functools
 import cPickle
 from ellipsoid import *
+from cover import cover
 import shelve
 from numpy import *
 
