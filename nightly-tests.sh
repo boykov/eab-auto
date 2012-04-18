@@ -4,4 +4,4 @@
 
 cd ~/git/difwave/dotgsie/
 
-make testcover
+make testc
