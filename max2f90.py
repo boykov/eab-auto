@@ -34,7 +34,7 @@ f90replace =    {
     "β"          : "bt",
     "φ"          : "ph",
     "ρ"          : "rh",
-    "σ"          : "sigmaij(i,j)",
+    "σ"          : "sigm",
     "%pi"        : "PI"
     }
 
