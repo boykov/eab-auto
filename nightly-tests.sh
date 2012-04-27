@@ -4,4 +4,4 @@
 
 cd ~/git/difwave/dotgsie/
 
-make testc
+python -m unittest testcover
