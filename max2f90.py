@@ -26,6 +26,7 @@ onestring = {
 
 f90replace =    {
     "sqrt"       : "asqrt",
+    "exp"        : "cdexp",
     "'"          : "",
     "δ"          : "dn",
     "kron_delta" : "dn",    
