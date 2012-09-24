@@ -8,7 +8,6 @@ if find /home/$USER/Dropbox/git/ -type d -name '*.git' | sed 's@^/home/'$USER'/D
 	    then
 		exit 1;
 	    fi
-	    git remote update
 	fi
     done
 then
