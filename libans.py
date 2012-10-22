@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import sympy
+
 pi=3.14159265358979324
 
 class Ellipsoide:
@@ -77,3 +79,5 @@ p = ProfileControl()
 print(e.getAxesReverse())
 print(Ω_e.ρGet())
 print(Ω_i.ρGet())
+α = sympy.Symbol('α')
+print(sympy.diff(α**2,α))
