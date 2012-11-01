@@ -56,3 +56,5 @@ sudo apt-get install gfortran
 sudo apt-get install fort77
 sudo apt-get install flex
 sudo apt-get install scalable-cyrfonts-tex
+
+sudo apt-get install uuid
