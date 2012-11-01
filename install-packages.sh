@@ -1,3 +1,4 @@
+sudo apt-get install wmctrl
 sudo apt-get install samba
 sudo apt-get install smbfs
 sudo apt-get install texinfo
@@ -50,6 +51,7 @@ sudo apt-get install texlive-latex-extra
 sudo apt-get install texlive-lang-cyrillic
 sudo apt-get install tex4ht
 sudo apt-get install auctex
+sudo apt-get install xpdf
 sudo apt-get install gfortran
 sudo apt-get install fort77
 sudo apt-get install flex
