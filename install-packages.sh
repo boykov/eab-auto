@@ -58,3 +58,6 @@ sudo apt-get install scalable-cyrfonts-tex
 sudo apt-get install uuid
 sudo apt-get install mpich2
 sudo apt-get install grepmail
+sudo apt-get install aspell-ru
+sudo apt-get install ruby-dev
+sudo apt-get install figlet
