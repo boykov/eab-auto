@@ -40,7 +40,6 @@ sudo apt-get install python3
 sudo apt-get install python3-dev
 sudo apt-get install python3-setuptools
 sudo apt-get install libopenmpi-dev
-sudo apt-get install offlineimap
 sudo apt-get install gnutls-bin
 sudo apt-get install libtool
 sudo apt-get install clisp
@@ -56,5 +55,6 @@ sudo apt-get install gfortran
 sudo apt-get install fort77
 sudo apt-get install flex
 sudo apt-get install scalable-cyrfonts-tex
-
 sudo apt-get install uuid
+sudo apt-get install mpich2
+sudo apt-get install grepmail
