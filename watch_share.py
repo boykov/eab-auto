@@ -23,8 +23,8 @@ class PClose(ProcessEvent):
            self.file = "%s" % event.path
         print "%s Closed" % self.file
         print "Performing pretend action on %s...." % self.file
-        os.system("sudo chown -R eab:eab ~/share")
-        os.system("sudo chmod -R 777 ~/share")        
+        os.system("sudo chown -R eab:eab ~/share/")
+        os.system("sudo chmod -R 777 ~/share/")        
         import time
         time.sleep(2)
         print "%s has been processed" % self.file
