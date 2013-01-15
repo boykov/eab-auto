@@ -32,7 +32,7 @@ sudo killall rtcwake
 # Set RTC wakeup time
 # N.B. change "mem" for the suspend option
 # find this by "man rtcwake"
-sudo rtcwake -l -m mem -t $DESIRED &
+sudo rtcwake -u -m mem -t $DESIRED &
 
 # feedback
 echo "Suspending..."
