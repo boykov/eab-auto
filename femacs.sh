@@ -1,3 +1,8 @@
 #!/bin/sh
 
-emacsclient --eval "(eab/show-minibuffer-frame)" && exit
+if (emacsclient --eval "(eab/show-minibuffer-frame)")
+then
+    return 0
+else
+    gnome-terminal
+fi
