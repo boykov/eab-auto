@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if (emacsclient --eval "(eab/show-minibuffer-frame)")
+if (emacsclient --eval "$*")
 then
     return 0
 else
