@@ -24,6 +24,8 @@ PATH=$PATH:~/git/auto
 PATH=$PATH:~/git/python
 PATH=$PATH:/var/lib/gems/1.8/bin/
 PATH=$PATH:~/bin/
+PATH=/home/eab/.emacs.d/el-get/cask/bin/:$PATH
+
 
 # i moved aliases here special for emacs
 # some more ls aliases
@@ -71,6 +73,11 @@ alias pdflatex='pdflatex --shell-escape'
 # alias python='~/git/auto/run-sage.sh'
 # alias maple='/home/eab/maple12/bin/xmaple'
 alias maple='/home/eab/data/maple16/bin/maple'
+
+tempbuffer() {
+  perl -MFile::Temp -MFile::Copy -e \
+  'copy *STDIN, $file = File::Temp->new; system "emacsclient", $file';
+}
 
 translate1() {
 echo "[`wget -qO- --user-agent firefox \"https://www.googleapis.com/language/translate/v2?key=AIzaSyCaygCPJSYNAmrfQITdHKCFQLDzkBslFrc&q=$3&source=$1&target=$2\"`]" \
