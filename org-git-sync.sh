@@ -1,9 +1,12 @@
 #!/bin/sh
 # Add org file changes to the repository
 # [[file:/etc/crontab][crontab]]
-REPOS="home cc difwave/mpl difwave/gmres difwave/upr_upr difwave/namelib org lit emacs dotemacs auto python patches" 
 
-for REPO in $REPOS
+REPOS="home cc difwave/mpl difwave/gmres difwave/upr_upr difwave/namelib org lit emacs dotemacs auto python patches"
+
+REPOSEXT="dotemacs/eab-misc"
+
+for REPO in $REPOS $REPOSEXT
 do
     echo "Repository: $REPO"
     cd ~/git/$REPO
@@ -15,4 +18,11 @@ do
     # git config --global user.email artscan@list.ru
     git commit -m "$(date)"
     git status | grep -qF 'working directory clean'
+done
+
+for REPO in $REPOSEXT
+do
+    echo "Repository: $REPO"
+    cd ~/git/$REPO
+    git push origin
 done
