@@ -2,6 +2,8 @@
 # Add org file changes to the repository
 # [[file:/etc/crontab][crontab]]
 
+. ~/.keychain/`/bin/hostname`-sh
+
 REPOS="home cc difwave/mpl difwave/gmres difwave/upr_upr difwave/namelib org lit emacs dotemacs auto python patches"
 
 REPOSEXT="dotemacs/eab-misc"
