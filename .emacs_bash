@@ -1,6 +1,7 @@
 # shopt -s histappend
 # PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
+export HISTIGNORE=' *'
 # export TERM='xterm-256color' # портит prompt? значит, только для emacsclient запускать
 export EDITOR='emacsclient'
 export XEDITOR='/usr/bin/emacsclient'
