@@ -6,7 +6,7 @@
 
 REPOS="home cc difwave/mpl difwave/gmres difwave/upr_upr difwave/namelib org lit emacs dotemacs auto python patches"
 
-REPOSEXT="dotemacs/eab-misc"
+REPOSEXT="dotemacs/el-get/eab-misc"
 
 for REPO in $REPOS $REPOSEXT
 do
