@@ -67,7 +67,6 @@ alias anemacs='bash ~/git/auto/run-editor.sh -s serverA&'
 
 # alias emacs='bash ~/git/auto/run-editor.sh&'
 # alias emacssudo='bash ~/git/auto/run-emacssudo.sh'
-# alias analizator='ooffice /mnt/t/analizatorOO.xls'
 # alias wiki='bash ~/wiki.sh'
 # alias hibernate='sudo /usr/sbin/hibernate-ram'
 alias hibernate='sudo /etc/acpi/sleepbtn.sh'
