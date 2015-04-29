@@ -78,6 +78,7 @@ alias pdflatex='pdflatex --shell-escape'
 # alias python='~/git/auto/run-sage.sh'
 # alias maple='/home/eab/maple12/bin/xmaple'
 alias maple='/home/eab/data/maple16/bin/maple'
+alias agi='sudo apt-get install'
 
 tempbuffer() {
   perl -MFile::Temp -MFile::Copy -e \
