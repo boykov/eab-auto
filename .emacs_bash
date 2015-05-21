@@ -44,6 +44,7 @@ alias grep='grep -i'
 # alias my='bash ~/git/auto/run-browser.sh'
 alias gg='bash ~/git/auto/gg.sh'
 alias gemacs='ps -A ux | grep emacs'
+alias kghost=`sudo kill -s KILL $(ps aux | grep '[d]aemon=ghost' | awk '{print $2}')`
 alias kkill='sudo kill -s KILL '
 alias remacs='bash -i -c "ssh -X eab@rainbow.local -t emacsclient -c&"'
 alias cemacs='bash -c "~/git/auto/run-editor.sh&" && exit'
