@@ -2,8 +2,8 @@
 # Test dotemacs config
 
 export EMACS_SERVER_NAME=serverM
-export DISPLAY=:0.0
+# export DISPLAY=:0.0
 
 `which emacs` --daemon=$EMACS_SERVER_NAME
 
-emacsclient -s $EMACS_SERVER_NAME -c --eval "(eab/test-dotemacs)"
+emacsclient -s $EMACS_SERVER_NAME --eval "(eab/test-dotemacs)"
