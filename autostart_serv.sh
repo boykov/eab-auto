@@ -9,6 +9,7 @@ bash -i -c "export USER=eab && /home/eab/.dropbox-dist/dropboxd &"
 # bash -i -c "export DISPLAY=:0 && gnome-screensaver-command -l"
 # bash -i -c "psensor &"
 bash -i -c "export USER=eab && sudo docker start jenkins &"
+# eval `ssh-agent -s`
 # # bash -i -c "/opt/TakeBreak/TakeBreak &"
 # # bash -i -c "python /home/eab/git/python/watch_share.py &"
 # bash -i -c "indicator-multiload &"
