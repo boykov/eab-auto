@@ -4,6 +4,6 @@
 export EMACS_SERVER_NAME=serverM
 # export DISPLAY=:0.0
 
-`which emacs` --daemon=$EMACS_SERVER_NAME
+/home/eab/data/gitno/emacs24.4/emacs-24.5/src/emacs-24.5.1 --daemon=$EMACS_SERVER_NAME
 
 emacsclient -s $EMACS_SERVER_NAME --eval "(eab/test-dotemacs)"
