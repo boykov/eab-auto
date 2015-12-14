@@ -1,7 +1,7 @@
 #!/bin/sh
 
 bash -i -c "sudo noip2 &"
-bash -i -c "cd ~/data/gitno/github/boykov.github.io/ && jekyll -w serve &"
+bash -i -c "cd ~/data/gitno/github/boykov.github.io/ && jekyll serve --host=0.0.0.0&"
 bash -i -c "~/bin/cloud &"
 bash -i -c "sudo dovecot &"
 bash -i -c "~/.dropbox-dist/dropboxd &"
