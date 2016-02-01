@@ -19,6 +19,6 @@ bash -i -c "export USER=eab && sudo docker start jenkins &"
 # bash -i -c "mono ~/KeePass/KeePass.exe &"
 bash -i -c "export USER=eab && mediatomb -e eth0 &"
 sudo mount --bind "/home/eab/downloads/pub/papers" "/home/eab/share/papers"
-sudo mount --bind "/home/eab/git/cc/boykov-2014-cmmf/boykov-2016" "/home/eab/share/boykov-2016/"
+sudo mount --bind "/home/eab/git/cc/" "/home/eab/share/cc/"
 sudo mount --bind "/home/eab/newdata/Cloud@Mail.Ru/read/" "/home/eab/share/read/"
 
