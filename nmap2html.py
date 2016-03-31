@@ -29,7 +29,9 @@ def f(t):
     return """"%s %s" [URL="%s", target = "_blank"];\n""" % (t[1],t[2],t[0])
 
 nmap="""
-graph G {
+digraph G {
+rank=same
+rankdir=LR
 """ + "".join(map(f,targets)) + """
 }
 """
