@@ -10,5 +10,8 @@ export EMACS_SERVER_NAME=serverN
 # /usr/local/bin/emacs -Q --batch -l $DOTPATH --eval "(eab/send-csum)"
 
 emacsclient -s $EMACS_SERVER_NAME --eval "(eab/batch-publish)"
+
+cd /home/eab/git/eabmisc/orgparse
+make tn=plotclock pp=tmp
 # emacsclient -c --eval "(progn (org-agenda nil \"H\") (delete-frame nil 'force))"
 # (org-publish-project \"pdf\" t)
