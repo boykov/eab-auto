@@ -1,4 +1,4 @@
 #!/bin/sh
 # Test CSUM
 
-/home/eab/git/eabmisc/orgparse/testCSUM.sh && /home/eab/git/eabmisc/orgparse/testGG.sh && /home/eab/git/eabmisc/orgparse/testIDs.sh
+/home/eab/git/org/misc/testCSUM.sh && /home/eab/git/org/misc/testGG.sh && /home/eab/git/org/misc/testIDs.sh

@@ -11,7 +11,7 @@ export EMACS_SERVER_NAME=serverN
 
 emacsclient -s $EMACS_SERVER_NAME --eval "(eab/batch-publish)"
 
-cd /home/eab/git/eabmisc/orgparse
-make tn=plotclock pp=tmp
+cd /home/eab/git/org/misc
+python plotclock.py
 # emacsclient -c --eval "(progn (org-agenda nil \"H\") (delete-frame nil 'force))"
 # (org-publish-project \"pdf\" t)
