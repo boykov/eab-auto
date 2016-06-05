@@ -1,0 +1,86 @@
+shopt -s histappend
+HISTFILESIZE=1000000
+HISTSIZE=1000000
+HISTTIMEFORMAT='%F %T '
+# PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+PROMPT_COMMAND='history -a'
+
+export HISTIGNORE=' *'
+# export TERM='xterm-256color' # портит prompt? значит, только для emacsclient запускать
+export XEDITOR='/usr/bin/emacsclient'
+PATH=$PATH:~/git/auto
+PATH=$PATH:~/git/python
+PATH=$PATH:~/bin/
+
+alias ditaa='java -jar ~/bin/ditaa0_9.jar'
+alias rm='rm -i'
+alias mv='mv -i'
+alias grep='grep -i'
+alias gg='bash ~/git/auto/gg.sh'
+alias gemacs='ps -A ux | grep emacs'
+alias kghost=`sudo kill -s KILL $(ps aux | grep '[d]aemon=ghost' | awk '{print $2}')`
+alias kkill='sudo kill -s KILL '
+alias remacs='bash -i -c "ssh -X eab@rainbow.local -t emacsclient -c&"'
+alias cemacs='bash -c "~/git/auto/run-editor.sh&" && exit'
+alias bash256='TERM=xterm-256color bash'
+alias tmux='TERM=xterm-256color tmux'
+alias temacs='TERM=xterm-256color emacsclient -t'
+alias tnemacs='TERM=xterm-256color emacsclient -s serverN -t'
+alias tpemacs='TERM=xterm-256color emacsclient -s serverP -t'
+alias tmemacs='TERM=xterm-256color emacsclient -s serverM -t'
+alias taemacs='TERM=xterm-256color emacsclient -s serverA -t'
+alias pemacs='bash -c "~/git/auto/run-editor.sh -s serverP&" && exit'
+alias nemacs='bash -c "~/git/auto/run-editor.sh -s serverN&" && exit'
+alias memacs='bash -c "~/git/auto/run-editor.sh -s serverM&" && exit'
+alias demacs='/home/eab/data/gitno/emacs24.4/emacs-24.5/src/emacs-24.5.1 --daemon'
+alias dpemacs_new='env HOME=/home/eab/newemacs bash -i -c dpemacs'
+alias dpemacs='export EMACS_SERVER_NAME=serverP && /home/eab/data/gitno/emacs24.4/emacs-24.5/src/emacs-24.5.1 --daemon=$EMACS_SERVER_NAME && pemacs'
+alias dnemacs='export EMACS_SERVER_NAME=serverN && /home/eab/data/gitno/emacs24.4/emacs-24.5/src/emacs-24.5.1 --daemon=$EMACS_SERVER_NAME'
+alias dmemacs='export EMACS_SERVER_NAME=serverM && /home/eab/data/gitno/emacs24.4/emacs-24.5/src/emacs-24.5.1 --daemon=$EMACS_SERVER_NAME'
+alias daemacs='export EMACS_SERVER_NAME=serverA && `which emacs` -q --daemon=$EMACS_SERVER_NAME --eval "(progn (setq user-emacs-directory \"~/emacs/\") (setq el-get-dir \"~/emacs/el-get/\"))" --eval "(ignore-errors (load \"~/emacs/init.el\"))"'
+alias anemacs='bash ~/git/auto/run-editor.sh -s serverA&'
+
+# alias hibernate='sudo /usr/sbin/hibernate-ram'
+alias hibernate='sudo /etc/acpi/sleepbtn.sh'
+alias hibernatedisk='sudo /etc/acpi/hibernate.sh'
+alias open='emacsclient -n'
+alias usb100='sudo umount /media/sys100 /media/data100'
+alias pdflatex='pdflatex --shell-escape'
+alias maple='/home/eab/data/maple16/bin/maple'
+alias agi='sudo apt-get install'
+
+tempbuffer() {
+  perl -MFile::Temp -MFile::Copy -e \
+  'copy *STDIN, $file = File::Temp->new; system "emacsclient", $file';
+}
+
+translate1() {
+echo "[`wget -qO- --user-agent firefox \"https://www.googleapis.com/language/translate/v2?key=AIzaSyCaygCPJSYNAmrfQITdHKCFQLDzkBslFrc&q=$3&source=$1&target=$2\"`]" \
+| jsawk -a "return this[0].data.translations[0].translatedText" \
+| perl -MHTML::Entities -pe 'decode_entities($_)'
+}
+
+SSH_ENV="$HOME/.ssh/environment"
+
+function start_agent {
+    echo "Initialising new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+    echo succeeded
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+    /usr/bin/ssh-add;
+}
+
+# Source SSH settings, if applicable
+
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" > /dev/null
+    #ps ${SSH_AGENT_PID} doesn't work under cywgin
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+	start_agent;
+    }
+else
+    start_agent;
+fi
+
+ssh-add /home/eab/.ssh/artscan &> /dev/null

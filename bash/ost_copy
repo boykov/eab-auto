@@ -1,0 +1,5 @@
+#!/bin/bash
+cp /ostatki/tmp/ost.zip /ostatki/FileLibrary/Files
+cp /ostatki/tmp/ost_new.zip /ostatki/FileLibrary/Files
+cd /ostatki/FileLibrary/Files
+chmod 664 *
