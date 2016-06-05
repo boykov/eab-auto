@@ -4,7 +4,7 @@
 
 . ~/.keychain/`/bin/hostname`-sh
 
-REPOS="eabhome home cc difwave/mpl difwave/gmres difwave/upr_upr difwave/namelib org lit emacs dotemacs auto python patches"
+REPOS="eabhome home cc difwave/mpl difwave/gmres difwave/upr_upr difwave/namelib org lit emacs dotemacs patches"
 
 REPOSEXT="dotemacs/el-get/eab-misc eabmisc/eabenglish"
 
