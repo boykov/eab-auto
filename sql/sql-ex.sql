@@ -36,4 +36,9 @@ from
 	where o2.ship not in (select s2.name from Ships s2) and o2.battle='Guadalcanal')) b
     join Classes c on c.class = b.class
 
+SELECT o.ship, c.displacement, c.numGuns
+FROM outcomes o left join
+    ships s on s.name=o.ship left join
+    Classes c on c.class=s.class or o.ship=c.class
+where battle='Guadalcanal'
 -- ------------------------------------------
