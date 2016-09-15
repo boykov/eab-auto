@@ -1,3 +1,9 @@
+mysqladmin -u root -p create ships
+mysqladmin -u root -p drop ships
+mysql ships < ships_mysql_script.sql
+mysql ships < query
+mysqladmin -u root -p variables 
+
 -- --- 46 --------------------------------------------
 
 SELECT ship, displacement, numGuns
@@ -41,4 +47,10 @@ FROM outcomes o left join
     ships s on s.name=o.ship left join
     Classes c on c.class=s.class or o.ship=c.class
 where battle='Guadalcanal'
+
+SELECT DISTINCT ship, displacement, numguns
+FROM classes
+    LEFT JOIN ships ON classes.class=ships.class
+    RIGHT JOIN outcomes ON classes.class=ship OR ships.name=ship
+WHERE battle='Guadalcanal';
 -- ------------------------------------------
