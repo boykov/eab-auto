@@ -1,0 +1,61 @@
+#+TITLE: Установка пакета ModEM
+#+OPTIONS: toc:4 H:6 num:nil html-postamble:nil ^:nil tags:nil author:nil
+#+SETUPFILE: theme-readtheorg-local.setup
+#+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
+#+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports both
+ls
+#+end_src
+
+#+RESULTS:
+: ModEM  modem_docs.tar.gz  modem.tar.gz
+
+* 3D_MT MPI
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code
+tar xzvf modem.tar.gz
+rm -rf ModEM/f90/objs/2D_MT
+rm -rf ModEM/f90/objs/3D_MT
+cd ModEM/f90
+bash Configure.3D_MT.Intel Makefile MPI
+sed -i "s/^F90 = ifort /F90 = mpiifort/g" Makefile
+sed -i "s|^LIBS_PATH = -L/opt/intel/Compiler/11.1/075/mkl/lib/em64t|LIBS_PATH = -L/opt/intel/mkl/10.2.5.035/lib/em64t|g" Makefile
+sed -i "s|^LIBS = -llapack -lblas |LIBS = -lmkl_rt |g" Makefile
+sed -i "s|^FFLAGS = -O3 -w  -xSSE4.2 -std03|FFLAGS = -O3 -w -std03|g" Makefile
+
+make
+cp Mod3DMT /opt/modem
+#+end_src
+
+* 2D_MT Release (not MPI)
+
+MPI-версия не тестировалась (так сказано в README) и при сборке выдает ошибку. Похоже, в кодовой базе не прописаны какие-то пути.
+
+#+begin_src raw
+Couldn't find source file for module MPI_declaration
+Couldn't find source file for module MPI_main
+#+end_src
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code
+rm Makefile
+bash Configure.2D_MT.Intel Makefile release
+sed -i "s|^LIBS_PATH = -L/opt/intel/Compiler/11.1/075/mkl/lib/em64t|LIBS_PATH = -L/opt/intel/mkl/10.2.5.035/lib/em64t|g" Makefile
+sed -i "s|^LIBS = -llapack -lblas |LIBS = -lmkl_rt |g" Makefile
+sed -i "s|^FFLAGS = -O3 -w  -xSSE4.2 -std03|FFLAGS = -O3 -w -std03|g" Makefile
+
+make
+cp Mod2DMT /opt/modem
+#+end_src
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports both
+ls -la /opt/modem
+#+end_src
+
+#+RESULTS:
+| total      | 5524 |      |      |         |     |    |       |         |
+| drwxr-xr-x |    2 | root | root |    4096 | Oct | 28 | 11:07 | .       |
+| drwxr-xr-x |   35 | root | root |    4096 | Oct | 28 | 11:05 | ..      |
+| -rwxr-xr-x |    1 | root | root | 1791237 | Oct | 28 | 11:07 | Mod2DMT |
+| -rwxr-xr-x |    1 | root | root | 3828454 | Oct | 28 | 11:07 | Mod3DMT |
+
