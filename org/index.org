@@ -4,6 +4,10 @@
 #+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
 #+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
 
+* Установочные файлы
+
+В настоящее время установка осуществляется с помощью *modem_docs.tar.gz*. Доступ к серверу SVN и тестовые примеры пока отсутствуют.
+
 #+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports both
 ls
 #+end_src
@@ -11,24 +15,50 @@ ls
 #+RESULTS:
 : ModEM  modem_docs.tar.gz  modem.tar.gz
 
-* 3D_MT MPI
+#+name: mkl-sse
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports none
+sed -i "s|^LIBS_PATH = -L/opt/intel/Compiler/11.1/075/mkl/lib/em64t|LIBS_PATH = -L/opt/intel/mkl/10.2.5.035/lib/em64t|g" Makefile
+sed -i "s|^LIBS = -llapack -lblas |LIBS = -lmkl_rt |g" Makefile
+sed -i "s|^FFLAGS = -O3 -w  -xSSE4.2 -std03|FFLAGS = -O3 -w -std03|g" Makefile
 
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code
+make
+#+end_src
+
+* Установка пакета
+
+** 3D_MT MPI (Parallel)
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code :noweb yes
 tar xzvf modem.tar.gz
 rm -rf ModEM/f90/objs/2D_MT
 rm -rf ModEM/f90/objs/3D_MT
 cd ModEM/f90
 bash Configure.3D_MT.Intel Makefile MPI
 sed -i "s/^F90 = ifort /F90 = mpiifort/g" Makefile
-sed -i "s|^LIBS_PATH = -L/opt/intel/Compiler/11.1/075/mkl/lib/em64t|LIBS_PATH = -L/opt/intel/mkl/10.2.5.035/lib/em64t|g" Makefile
-sed -i "s|^LIBS = -llapack -lblas |LIBS = -lmkl_rt |g" Makefile
-sed -i "s|^FFLAGS = -O3 -w  -xSSE4.2 -std03|FFLAGS = -O3 -w -std03|g" Makefile
-
-make
+<<mkl-sse>>
 cp Mod3DMT /opt/modem
 #+end_src
 
-* 2D_MT Release (not MPI)
+** 3D_MT Release (Sequential)
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code :noweb yes
+rm Makefile
+rm -rf ModEM/f90/objs/3D_MT
+bash Configure.3D_MT.Intel Makefile release
+<<mkl-sse>>
+cp Mod3DMT /opt/modem/Mod3DMT_seq
+#+end_src
+
+** 2D_MT Release (Sequential)
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code :noweb yes
+rm Makefile
+bash Configure.2D_MT.Intel Makefile release
+<<mkl-sse>>
+cp Mod2DMT /opt/modem
+#+end_src
+
+** 2D_MT MPI (Parallel)
 
 MPI-версия не тестировалась (так сказано в README) и при сборке выдает ошибку. Похоже, в кодовой базе не прописаны какие-то пути.
 
@@ -37,25 +67,79 @@ Couldn't find source file for module MPI_declaration
 Couldn't find source file for module MPI_main
 #+end_src
 
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code
-rm Makefile
-bash Configure.2D_MT.Intel Makefile release
-sed -i "s|^LIBS_PATH = -L/opt/intel/Compiler/11.1/075/mkl/lib/em64t|LIBS_PATH = -L/opt/intel/mkl/10.2.5.035/lib/em64t|g" Makefile
-sed -i "s|^LIBS = -llapack -lblas |LIBS = -lmkl_rt |g" Makefile
-sed -i "s|^FFLAGS = -O3 -w  -xSSE4.2 -std03|FFLAGS = -O3 -w -std03|g" Makefile
+* Использование пакета
 
-make
-cp Mod2DMT /opt/modem
-#+end_src
+Без тестовых примеров предложить типичные варианты использования затруднительно.
 
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports both
-ls -la /opt/modem
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/opt/modem :exports both
+ls -la
 #+end_src
 
 #+RESULTS:
-| total      | 5524 |      |      |         |     |    |       |         |
-| drwxr-xr-x |    2 | root | root |    4096 | Oct | 28 | 11:07 | .       |
-| drwxr-xr-x |   35 | root | root |    4096 | Oct | 28 | 11:05 | ..      |
-| -rwxr-xr-x |    1 | root | root | 1791237 | Oct | 28 | 11:07 | Mod2DMT |
-| -rwxr-xr-x |    1 | root | root | 3828454 | Oct | 28 | 11:07 | Mod3DMT |
+| total      | 9092 |      |      |         |     |    |       |             |
+| drwxr-xr-x |    2 | root | root |    4096 | Oct | 31 | 10:15 | .           |
+| drwxr-xr-x |   35 | root | root |    4096 | Oct | 28 | 11:05 | ..          |
+| -rwxr-xr-x |    1 | root | root | 1791237 | Oct | 28 | 11:07 | Mod2DMT     |
+| -rwxr-xr-x |    1 | root | root | 3828454 | Oct | 28 | 11:07 | Mod3DMT     |
+| -rwxr-xr-x |    1 | root | root | 3642385 | Oct | 31 | 10:15 | Mod3DMT_seq |
 
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/opt/modem :exports both :results value verbatim
+./Mod2DMT
+#+end_src
+
+#+RESULTS:
+#+begin_example
+ Copyright (c) 2004-2014 Oregon State University
+ AUTHORS  Gary Egbert, Anna Kelbert & Naser Meqbel
+ College of Earth, Ocean and Atmospheric Sciences
+ 
+ Output information to files, and progress report to screen (default).
+ Usage: Mod3DMT -[job] [args]
+ 
+ [READ_WRITE]
+  -R  rFile_Model rFile_Data [wFile_Model wFile_Data]
+   Reads your input files and checks them for validity;
+   optionally also writes them out
+ [FORWARD]
+  -F  rFile_Model rFile_Data wFile_Data [wFile_EMsoln rFile_fwdCtrl]
+   Calculates the predicted data and saves the EM solution
+ [INVERSE]
+  -I NLCG rFile_Model rFile_Data [lambda eps]
+   Here, lambda = the initial damping parameter for inversion
+            eps = misfit tolerance for the forward solver
+ OR
+  -I NLCG rFile_Model rFile_Data [rFile_invCtrl rFile_fwdCtrl]
+   Optionally, may also supply
+       the model covariance configuration file   [rFile_Cov]
+       the starting model parameter perturbation [rFile_dModel]
+   Runs an inverse search to yield an inverse model at every iteration
+ [COMPUTE_J]
+  -J  rFile_Model rFile_Data wFile_Sens [rFile_fwdCtrl]
+   Calculates and saves the full J(acobian)
+ [MULT_BY_J]
+  -M  rFile_Model rFile_dModel rFile_Data wFile_Data [rFile_fwdCtrl]
+   Multiplies a model by J to create a data vector
+ [MULT_BY_J_T]
+  -T  rFile_Model rFile_Data wFile_dModel [rFile_fwdCtrl]
+   Multiplies a data vector by J^T to create a model
+ [MULT_BY_J_T_multi_Tx]
+  -x  rFile_Model rFile_Data wFile_dModel [rFile_fwdCtrl]
+   Multiplies a data vector by J^T to output models for each transmitter
+ [APPLY_COV]
+  -C FWD rFile_Model wFile_Model [rFile_Cov rFile_Prior]
+   Applies the model covariance to produce a smooth model output
+   Optionally, also specify the prior model to compute resistivities
+   from model perturbation: m = C_m^{1/2} \\tilde{m} + m_0
+ [TEST_ADJ]
+  -A  J rFile_Model rFile_dModel rFile_Data [wFile_Model wFile_Data]
+   Tests the equality d^T J m = m^T J^T d for any model and data.
+   Optionally, outputs J m and J^T d.
+ [TEST_SENS]
+  -S  rFile_Model rFile_dModel rFile_Data wFile_Data [wFile_Sens]
+   Multiplies by the full Jacobian, row by row, to get d = J m.
+   Compare to the output of [MULT_BY_J] to test [COMPUTE_J]
+ 
+ Optional final argument -v [debug|full|regular|compact|result|none]
+ indicates the desired level of output to screen and to files.
+ 
+#+end_example
