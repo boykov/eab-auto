@@ -55,7 +55,7 @@ cp Mod3DMT /opt/modem/Mod3DMT_seq
 rm Makefile
 bash Configure.2D_MT.Intel Makefile release
 <<mkl-sse>>
-cp Mod2DMT /opt/modem
+cp Mod2DMT /opt/modem/Mod2DMT_seq
 #+end_src
 
 ** 2D_MT MPI (Parallel)
@@ -77,14 +77,14 @@ ls -la
 
 #+RESULTS:
 | total      | 9092 |      |      |         |     |    |       |             |
-| drwxr-xr-x |    2 | root | root |    4096 | Oct | 31 | 10:15 | .           |
+| drwxr-xr-x |    2 | root | root |    4096 | Oct | 31 | 11:01 | .           |
 | drwxr-xr-x |   35 | root | root |    4096 | Oct | 28 | 11:05 | ..          |
-| -rwxr-xr-x |    1 | root | root | 1791237 | Oct | 28 | 11:07 | Mod2DMT     |
+| -rwxr-xr-x |    1 | root | root | 1791237 | Oct | 28 | 11:07 | Mod2DMT_seq |
 | -rwxr-xr-x |    1 | root | root | 3828454 | Oct | 28 | 11:07 | Mod3DMT     |
 | -rwxr-xr-x |    1 | root | root | 3642385 | Oct | 31 | 10:15 | Mod3DMT_seq |
 
 #+begin_src sh :dir /ssh:boykov@mercury.febras.net:/opt/modem :exports both :results value verbatim
-./Mod2DMT
+./Mod2DMT_seq
 #+end_src
 
 #+RESULTS:
