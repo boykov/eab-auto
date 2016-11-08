@@ -4,52 +4,84 @@
 #+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
 #+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
 
-В настоящее время установка осуществляется с помощью *modem.tar.gz*. Доступ к [[http://blogs.oregonstate.edu/modem3dmt/?page_id=123][серверу SVN]] и тестовые примеры отсутствуют. Без тестовых примеров предложить типичные варианты использования затруднительно.
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports results
-ls
+Получив доступ к [[http://blogs.oregonstate.edu/modem3dmt/?page_id=123][серверу SVN]] и тестовым примерам, используем их для установки и тестирования
+#+begin_src sh :exports code
+svn checkout http://ohm.coas.oregonstate.edu/svn/ModEM/branches/stable ModEM
+cd ModEM/f90
 #+end_src
-
-#+RESULTS:
-: ModEM  modem_docs.tar.gz  modem.tar.gz
-
 * Общие команды для всех установок <mkl-sse>
 #+name: mkl-sse
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code
+#+begin_src sh :exports none
 sed -i "s|^LIBS_PATH = -L/opt/intel/Compiler/11.1/075/mkl/lib/em64t|LIBS_PATH = -L/opt/intel/mkl/10.2.5.035/lib/em64t|g" Makefile
 sed -i "s|^LIBS = -llapack -lblas |LIBS = -lmkl_rt |g" Makefile
 sed -i "s|^FFLAGS = -O3 -w  -xSSE4.2 -std03|FFLAGS = -O3 -w -std03|g" Makefile
 
 make
 #+end_src
+#+begin_src sh :exports code :noweb yes
+<<mkl-sse>>
+#+end_src
 * Установка 3D_MT MPI (Parallel)
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code :noweb yes
-tar xzvf modem.tar.gz
-rm -rf ModEM/f90/objs/2D_MT
-rm -rf ModEM/f90/objs/3D_MT
-cd ModEM/f90
+#+begin_src sh :exports code :noweb yes
 bash Configure.3D_MT.Intel Makefile MPI
 sed -i "s/^F90 = ifort /F90 = mpiifort/g" Makefile
 <mkl-sse>
-cp Mod3DMT /opt/modem
+cp Mod3DMT /opt/modem/Mod3DMT_MPI
 #+end_src
 * Установка 3D_MT Release (Sequential)
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code :noweb yes
+#+begin_src sh :exports code :noweb yes
 rm Makefile
-rm -rf ModEM/f90/objs/3D_MT
+rm -rf objs/3D_MT
 bash Configure.3D_MT.Intel Makefile release
 <mkl-sse>
-cp Mod3DMT /opt/modem/Mod3DMT_seq
-#+end_src
-* Установка 2D_MT Release (Sequential)
-#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/ :exports code :noweb yes
-rm Makefile
-bash Configure.2D_MT.Intel Makefile release
-<mkl-sse>
-cp Mod2DMT /opt/modem/Mod2DMT_seq
+cp Mod3DMT /opt/modem/Mod3DMT
 #+end_src
 * Установка 2D_MT MPI (Parallel)
-MPI-версия не тестировалась (так сказано в README) и при сборке выдает ошибку. Похоже, в кодовой базе не прописаны какие-то пути:
+Чтобы исправить ошибку
 #+begin_src raw
 Couldn't find source file for module MPI_declaration
 Couldn't find source file for module MPI_main
 #+end_src
+добавляется *"MPI:"* в файл Configure.2D_MT.Intel
+#+begin_src sh :exports code :noweb yes
+rm Makefile
+sed -i "s|^-p .:INV:LAPACK:|-p .:INV:MPI:LAPACK:|g" Configure.2D_MT.Intel
+bash Configure.2D_MT.Intel Makefile MPI
+sed -i "s/^F90 = ifort /F90 = mpiifort/g" Makefile
+<mkl-sse>
+cp Mod2DMT /opt/modem/Mod2DMT_MPI
+#+end_src
+* Установка 2D_MT Release (Sequential)
+#+begin_src sh :exports code :noweb yes
+rm Makefile
+rm -rf objs/2D_MT
+bash Configure.2D_MT.Intel Makefile release
+<mkl-sse>
+cp Mod2DMT /opt/modem/Mod2DMT
+#+end_src
+* Тестирование 3D_MT MPI (Parallel)
+#+begin_src sh :exports code :noweb yes
+cd ../examples/3D_MT/Cascadia
+qsub job.qsub
+#+end_src
+#+CAPTION: Файл job.qsub
+#+INCLUDE: /ssh:boykov@mercury.febras.net:/home/boykov/install/ModEM/examples/3D_MT/Cascadia/job.qsub src sh
+#+CAPTION: Файл job
+#+INCLUDE: /ssh:boykov@mercury.febras.net:/home/boykov/install/ModEM/examples/3D_MT/Cascadia/job src sh
+Результат выполнения
+* Тестирование 3D_MT Release (Sequential)
+#+begin_src sh :exports code :noweb yes
+cd ../BLOCK2
+./run.sh
+#+end_src
+#+CAPTION: Файл run.sh
+#+INCLUDE: /ssh:boykov@mercury.febras.net:/home/boykov/install/ModEM/examples/3D_MT/BLOCK2/run.sh src sh
+Результат выполнения
+#+begin_src raw
+Completed NLCG iteration    36
+     with: f=1.109136E+00 m2=7.751236E-01 rms=   1.049469 lambda=1.000000E-02 alpha=3.055134E+01
+         NLCG iterations:   36    function evaluations:   72
+  elapsed time (mins)    9.798568
+#+end_src
+* Тестирование 2D_MT MPI и 2D_MT Release
+Осуществить не удается, поскольку примеры для 2D_MT неполны: отсутствуют команды. Вероятно, разработчики не добавили их в репозиторий svn.
