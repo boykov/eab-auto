@@ -1,0 +1,27 @@
+#+TITLE: Установка и использование пакета Wannier90
+#+OPTIONS: toc:nil H:6 num:nil html-postamble:nil ^:nil tags:nil author:nil
+#+SETUPFILE: theme-readtheorg-local.setup
+#+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
+#+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+
+* Установка пакета Wannier90
+
+Используем инструкцию по установке[fn::http://www.wannier.org/doc/README.install].
+
+#+begin_src sh
+wget http://www.wannier.org/code/wannier90-2.0.1.tar.gz
+tar -zxvf wannier90-2.0.1.tar.gz
+cd wannier90-2.0.1
+cp ./config/make.sys.ifort ./make.sys
+make
+cp postw90.x /opt/wannier90/
+cp wannier90.x /opt/wannier90/
+#+end_src
+
+* Тестирование пакета Wannier90
+
+#+begin_src sh
+make test
+#+end_src
+
+Тест выполнился успешно, результаты можно посмотреть в файле *test/wantest.log*.
