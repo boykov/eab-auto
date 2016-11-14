@@ -14,14 +14,33 @@ tar -zxvf wannier90-2.0.1.tar.gz
 cd wannier90-2.0.1
 cp ./config/make.sys.ifort ./make.sys
 make
-cp postw90.x /opt/wannier90/
-cp wannier90.x /opt/wannier90/
+cp postw90.x /opt/wannier90/2.0.1/
+cp wannier90.x /opt/wannier90/2.0.1/
 #+end_src
 
 * Тестирование пакета Wannier90
 
 #+begin_src sh
 make test
+cd test
 #+end_src
 
 Тест выполнился успешно, результаты можно посмотреть в файле *test/wantest.log*.
+Описание тестов:
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/wannier90-2.0.1/tests/ :exports both :results verbatim
+cat test1/des.dat
+#+end_src
+
+#+RESULTS:
+:  Valence States of GaAs with a 2x2x2 kpoint mesh
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/wannier90-2.0.1/tests/ :exports both :results verbatim
+cat test2/des.dat
+#+end_src
+
+#+RESULTS:
+:  4 MLWF for Li using disentanglement and a 4x4x4 grid
+:  Plotting Interpolated Band Structure
+
+# #+include: /ssh:boykov@mercury.febras.net:/home/boykov/install/wannier90-2.0.1/tests/wantest.log src raw
