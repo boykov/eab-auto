@@ -1,0 +1,142 @@
+#+TITLE: Установка и использование пакета oncvpsp
+#+OPTIONS: toc:nil H:6 num:t html-postamble:nil ^:nil tags:nil author:nil
+#+SETUPFILE: theme-readtheorg-local.setup
+#+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
+#+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+
+
+* Установка пакета
+
+** Установка libxc
+
+#+begin_src sh :exports code
+mkdir -p /opt/libxc/2.2.3
+
+cd install
+
+wget http://www.tddft.org/programs/octopus/down.php?file=libxc/libxc-2.2.3.tar.gz
+tar -zxvf libxc-2.2.3.tar.gz
+
+cd libxc-2.2.3
+./configure --prefix=/opt/libxc/2.2.3 FC=gfortran44
+make
+make check
+sudo make install
+#+end_src
+
+** Установка oncvpsp
+
+#+begin_src sh :exports code
+mkdir -p /opt/oncvpsp/3.2.3
+
+wget http://www.mat-simresearch.com/oncvpsp-3.2.3.tar.gz
+tar -zxvf oncvpsp-3.2.3.tar.gz
+
+cd ../oncvpsp-3.2.3
+sed -i "s/^F77        = gfortran/F77        = gfortran44/g" make.inc
+sed -i "s/^F90        = gfortran/F90        = gfortran44/g" make.inc
+sed -i "s|^LIBS = -L/usr/local/lapack/lib -llapack -lrefblas|LIBS = -L/opt/intel/mkl/10.2.5.035/lib/em64t -lmkl_rt|g" make.inc
+sed -i "s|^#LIBS += -L/home/drh/abinit/fallbacks/exports/lib -lxcf90 -lxc|LIBS += -L/opt/libxc/2.2.3/lib -lxcf90 -lxc|g" make.inc
+sed -i "s|^#FFLAGS += -I/home/drh/abinit/fallbacks/exports/include|FFLAGS += -I/opt/libxc/2.2.3/include|g" make.inc
+sed -i "s|^#OBJS_LIBXC|OBJS_LIBXC|g" make.inc
+make all >&make.log
+cp src/*.x /opt/oncvpsp/3.2.3/
+#+end_src
+
+#+begin_src sh :dir /ssh:boykov@mercury.febras.net:/home/boykov/install/oncvpsp-3.2.3/ :exports none :results code
+git show 5b5c2dd
+#+end_src
+
+#+caption: Изменения в файле make.inc
+#+BEGIN_SRC diff
+commit 5b5c2dd478beb13a58f936d9da5c7e29112b50b7
+Author: Evgeny Boykov <boykov@mercury.febras.net>
+Date:   Wed Dec 7 15:04:20 2016 +1000
+
+    fix make.inc
+
+diff --git a/make.inc b/make.inc
+index e5e39e5..8100bc3 100644
+--- a/make.inc
++++ b/make.inc
+@@ -6,8 +6,8 @@
+  
+ ##### Edit the following lines to correspond to your compilers ####
+ 
+-F77        = gfortran
+-F90        = gfortran
++F77        = gfortran44
++F90        = gfortran44
+ CC         = gcc
+ FCCPP      = cpp
+ 
+@@ -22,7 +22,7 @@ CFLAGS     = -O3
+ 
+ ##### Edit the following LAPACK and BLAS library paths for your system ####
+ 
+-LIBS = -L/usr/local/lapack/lib -llapack -lrefblas
++LIBS = -L/opt/intel/mkl/10.2.5.035/lib/em64t -lmkl_rt
+ 
+ ##### Edit the following for to use libxc if available #####
+ 
+@@ -34,11 +34,11 @@ OBJS_LIBXC =	exc_libxc_stub.o
+ # make clean in src before rebuilding after changing this
+ 
+ ##for libxc 2.1.0 and later use
+-#LIBS += -L/home/drh/abinit/fallbacks/exports/lib -lxcf90 -lxc
++LIBS += -L/opt/libxc/2.2.3/lib -lxcf90 -lxc
+ 
+ ##for earlier releases use
+ #LIBS += -L/home/drh/abinit/fallbacks/exports/lib -lxc
+ 
+-#FFLAGS += -I/home/drh/abinit/fallbacks/exports/include
+-#OBJS_LIBXC =	functionals.o exc_libxc.o 
++FFLAGS += -I/opt/libxc/2.2.3/include
++OBJS_LIBXC =	functionals.o exc_libxc.o 
+ 
+#+END_SRC
+
+* Использование пакета
+
+Команда =make all= также запускает на выполнение тесты. Все тесты пройдены успешно.
+
+#+begin_src sh :exports code
+cd tests/data ; ./TEST.sh
+cat tests/data/TEST.report
+#+end_src
+
+#+begin_src sh :exports none :results value pp
+scp boykov@mercury.febras.net:/home/boykov/install/oncvpsp-3.2.3/tests/data/TEST.report TEST.report
+sed -i "/^$/d" TEST.report
+cat TEST.report
+rm TEST.report
+#+end_src
+
+#+caption: Результат выполнения тестов
+#+begin_src raw
+03_Li.diff:Summary  : no significant difference has been found
+07_N.diff:Summary  : different lines= 8 , max abs_diff= 1.000e-07 (l.334), max rel_diff= 2.092e-08 (l.306)
+08_O.diff:Summary  : different lines= 2 , max abs_diff= 1.000e-07 (l.394), max rel_diff= 1.039e-08 (l.394)
+14_Si.diff:Summary  : different lines= 5 , max abs_diff= 1.000e-07 (l.648), max rel_diff= 1.139e-06 (l.750)
+14_Si_GHOST.diff:Summary  : different lines= 4 , max abs_diff= 1.000e-07 (l.659), max rel_diff= 1.954e-07 (l.745)
+14_Si_st.diff:Summary  : no significant difference has been found
+14_Si_UPF.diff:Summary  : different lines= 5 , max abs_diff= 1.000e-07 (l.648), max rel_diff= 1.139e-06 (l.750)
+17_Cl.diff:Summary  : no significant difference has been found
+19_K.diff:Summary  : different lines= 2 , max abs_diff= 1.000e-02 (l.224), max rel_diff= 2.367e-04 (l.224)
+19_K_st.diff:Summary  : no significant difference has been found
+20_Ca.diff:Summary  : no significant difference has been found
+22_Ti.diff:Summary  : no significant difference has been found
+29_Cu.diff:Summary  : no significant difference has been found
+32_Ge.diff:Summary  : no significant difference has been found
+34_Se.diff:Summary  : different lines= 11 , max abs_diff= 3.899e-02 (l.8178), max rel_diff= 6.135e-01 (l.8178)
+38_Sr.diff:Summary  : different lines= 2 , max abs_diff= 1.000e-02 (l.227), max rel_diff= 3.306e-04 (l.227)
+40_Zr.diff:Summary  : different lines= 25 , max abs_diff= 2.180e-01 (l.9125), max rel_diff= 1.000e+00 (l.9125)
+52_Te_r.diff:Summary  : different lines= 4 , max abs_diff= 1.000e-02 (l.472), max rel_diff= 1.778e-04 (l.472)
+56_Ba.diff:Summary  : different lines= 2 , max abs_diff= 1.000e-02 (l.305), max rel_diff= 1.778e-04 (l.305)
+57_La.diff:Summary  : no significant difference has been found
+74_W_r.diff:Summary  : no significant difference has been found
+79_Au_r.diff:Summary  : different lines= 16 , max abs_diff= 1.885e+00 (l.17480), max rel_diff= 3.096e-01 (l.17480)
+80_Hg_r.diff:Summary  : different lines= 6 , max abs_diff= 1.000e-02 (l.483), max rel_diff= 4.938e-04 (l.483)
+83_Bi.diff:Summary  : no significant difference has been found
+#+end_src
+
