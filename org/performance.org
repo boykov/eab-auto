@@ -1,0 +1,512 @@
+#+TITLE: Материалы по оценке производительности вычислительных систем
+#+OPTIONS: toc:nil H:6 num:t html-postamble:nil ^:nil tags:nil author:nil
+#+SETUPFILE: theme-readtheorg-local.setup
+#+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
+#+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+
+
+#+begin_quote
+Необходимо найти и изучить литературу по оценке производительности
+высокопроизводительных вычислительных систем. Основная цель -
+сформировать набор тестов, который будет использоваться при вводе в
+эксплуатацию нового вычислительного кластера. Особое внимание уделить
+вопросам тестирования *GPU* (NVIDIA *P100*) и процессоров с архитектурой
+*POWER8*. Также нужно поискать примеры обзорных работ, публикуемых
+организациями для своих вычислительных систем.
+
+Ключевые слова: обзорная статья, *S822LC*, *CUDA 8*, *Pascal*, *NVLink*,
+*LINPACK*, *Green500*, *Graph500*, плотнозаполненные матрицы, тесты
+для новой архитектуры.
+#+end_quote
+
+* публикации организациями для своих вычислительных систем
+- Отчет о введении гибридного кластера ФМБФ в эксплуатацию 2010
+  - http://miptic.ru/about/cluster_report_2010.php
+- В августе 2011 года компания «Интант» завершила работы по созданию
+  вычислительного кластера в Томском Государственном Университете.
+  - http://www.intant.ru/Events/News/7593.aspx
+- Ввод в постоянную эксплуатацию нового вычислительного кластера СПбГПУ / 10.02.2012
+  - http://www.ict.edu.ru/news/tech/4628/
+* Бенчмарки и тесты
+
+- буклет IBM Power System S822LC for High Performance Computing
+  - Kinetica “Filter by geographic area” queries on data set of 280
+    million simulated Tweets with 1 up to 80 concurrent query streams
+    each with 0 think time
+  - LatticeQCD
+  - SOAP3-dp
+  - CPMD, a parallelized plane wave /pseudopotential implementation of
+    Density Functional Theory. A Hybrid version of CPMD (e.g. MPI +
+    OPENMP + GPU + streams)
+  - High Performance Conjugate Gradients (HPCG) Benchmark http://www.hpcg-benchmark.org/
+- КОМПЛЕКСНАЯ МЕТОДИКА ТЕСТИРОВАНИЯ ПРОИЗВОДИТЕЛЬНОСТИ СУПЕРКОМПЬЮТЕРОВ
+  - Класс DIS-задач представляют тест
+    - BFS (рейтинг Graph500);
+    - 3/4 тестов HPC Challenge Class 1 Awards
+      - G-RandomAccess
+      - G-FFT
+      - EP-STREAM-Triad
+  - СF-задачи
+    - Linpack (рейтинг Top500)
+    - G-HPL (рейтинг HPC Challenge Class 1 Awards)
+  - Многоуровневая методика оценочного тестирования
+    - Первый уровень: оценка подсистемы памяти на тесте APEX-MAP, он
+      искусственно меняет пространственно-временн́ую локализацию адресов
+      обращений и определяет среднее количество тактов на
+      однообращение. По результатам строится APEX-поверхность зависимость
+      тактов процессора, затраченных на обращение к памяти, от временн́ой и
+      пространственной локализации.
+    - Второй уровень: граничные тесты, соответствуют четырем предельным
+      значениям пространственно-временн́ой локализации: Linpack (хорошая
+      пространственная и временн́ая локализация), Random Access
+      (одновременно плохая пространственная и временн́ая), PTRANS и TRIAD
+      (плохая временн́ая, хорошая пространственная), FFT (хорошая
+      временн́ая, плохая пространственная локализация).
+    - Третий уровень: специально подобранные тесты для детального
+      исследования оборудования, а именно процессорных функциональных
+      устройств выполнения арифметико-логических операций и операций с
+      памятью, внутренней и внешней сети вычислительных узлов, системы
+      ввода-вывода.
+    - Четвертый уровень: общие и специальные базовые алгоритмы прикладных
+      программ: стандартные математические функции, векторные операции,
+      векторно-матричные операции (включая операции с разреженными
+      матрицами), матричные операции, операции с битовыми матрицами,
+      операции специальных преобразований при обработке сигналов, операции
+      целочисленной арифметики многократной точности.
+    - Пятый уровень: ядра разных приложений, а именно научные расчеты
+      (линейная алгебра и аэро-гидродинамика); сжатие текстов и
+      изображений; защита информации; обработка текстов и изображений;
+      задачи оптимизации и поиска; задачи на высокорегулярных
+      структурах (сеточные методы и клеточные алгоритмы); задачи на
+      деревьях и графах; тесты разных моделей организации параллельных
+      программ.
+    - Шестой уровень: тесты модельных приложений, а также операционной
+      системы и системы планирования прохождения заданий.
+
+* S822LC
+
+- Server-side GPU acceleration
+  - But most of this power will be wasted unless GPUs learn to
+    exchange data with CPUs at faster speeds. For years, Nvidia has
+    been working on a technology that could do just that, and it looks
+    like NVLink is finally ready for action.
+- буклет IBM Power System S822LC for High Performance Computing
+  - https://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=POD03117USEN
+    - [[http://www-01.ibm.com/common/ssi/cgi-bin/ssialias?subtype=BR&infotype=PM&appname=STGE_PO_PO_USEN&htmlfid=POB03046USEN][IBM Power Systems Facts and Features]]
+  - The combination of NVLink and NVIDIA Tesla P100 GPUs delivers
+    unprecedented performance across multiple workloads compared to
+    x86 with Tesla K80 GPUs:
+    - 2.5 times more queries per hour running Kinetica “Filter by
+      geographic area” queries
+    - 1.9 times more GFLOPS based on running LatticeQCD 32 times more
+      “Base Pairs Aligned” per Second running SOAP3-dp with 2 instances
+      per device.
+    - 2.3 times better performance (57 percent reduction in execution
+      time) running CPMD
+    - 1.7 times better performance running the High Performance
+      Conjugate Gradients (HPCG) Benchmark.
+- Operating systems
+  - Linux on POWER
+    - Ubuntu 16.04.1 LTS ppc64el on S822LC
+  - 
+
+* Ключевые слова
+** LINPACK
+:PROPERTIES:
+:CUSTOM_ID: linpack
+:ID:       7913bb34-5ecd-4445-bb30-eb8747a4128c
+:END:
+- [[https://www.nextplatform.com/2016/06/20/nvidia-rounds-pascal-tesla-accelerator-lineup/][Nvidia Rounds Out Pascal Tesla Accelerator Lineup]]
+  - Interestingly, because the M40 does not have DP math, it cannot
+    run the Linpack Fortran benchmark test, and it therefore cannot be
+    ranked on the Top 500 list of supercomputers.
+- High Performance Linpack for GPUs (Using OpenCL, CUDA, CAL) https://github.com/davidrohr/hpl-gpu
+** NVIDIA P100 Pascal
+:PROPERTIES:
+:CUSTOM_ID: p100
+:ID:       0a47544c-f8e5-440e-8812-8c9bee1a4344
+:END:
+- NVIDIA® Tesla® P100 GPU accelerators are the most advanced ever
+  built for the data center. They tap into the new NVIDIA Pascal™ GPU
+  architecture
+
+- INSIDE PASCAL
+  - http://on-demand.gputechconf.com/gtc/2016/presentation/s6176-mark-harris-lars-nyland.pdf
+  - https://devblogs.nvidia.com/parallelforall/inside-pascal/
+    - Increasing Developer Productivity with Unified Memory
+      - Unified Memory is an important feature of the CUDA programming
+        model that greatly simplifies programming and porting of
+        applications to GPUs by providing a single, unified virtual
+        address space for accessing all CPU and GPU memory in the
+        system.
+      - The CUDA system software automatically migrates data allocated
+        in Unified Memory between GPU and CPU, so that it looks like
+        CPU memory to code running on the CPU, and like GPU memory to
+        code running on the GPU.
+    - Page faulting
+      - First, page faulting means that the CUDA system software
+        doesn’t need to synchronize all managed memory allocations to
+        the GPU before each kernel launch. If a kernel running on the
+        GPU accesses a page that is not resident in its memory, it
+        faults, allowing the page to be automatically migrated to the
+        GPU memory on-demand. Alternatively, the page may be mapped
+        into the GPU address space for access over the PCIe or NVLink
+        interconnects (mapping on access can sometimes be faster than
+        migration). Note that Unified Memory is system-wide: GPUs (and
+        CPUs) can fault on and migrate memory pages either from CPU
+        memory or from the memory of other GPUs in the system.
+
+- CUDA 8 Pascal
+  - Allocate Beyond GPU Memory Size
+    - Certain operating system modifications are required to enable
+      Unified Memory with the system allocator. NVIDIA is
+      collaborating with Red Hat and working within the Linux
+      community to enable this powerful functionality.
+  - Finally, on supporting platforms, memory allocated with the
+    default OS allocator (e.g. ‘malloc’ or ‘new’) can be accessed from
+    both GPU code and CPU code using the same pointer (see code
+    example below).
+    - Moreover, GP100’s large virtual address space and page faulting
+      capability enable applications to access the entire system
+      virtual memory.
+  - With the new page fault mechanism, global data coherency is
+    guaranteed with Unified Memory. This means that with GP100, the
+    CPUs and GPUs can access Unified Memory allocations
+    simultaneously.
+    - Note, as with any parallel application, developers need to
+      ensure correct synchronization to avoid data hazards between
+      processors.
+  - Expanding on the benefits of CUDA 6 Unified Memory, Pascal GP100
+    adds features to further simplify programming and sharing of
+    memory between CPU and GPU, and allowing easier porting of CPU
+    parallel compute applications to use GPUs for tremendous
+    speedups. Two main hardware features enable these improvements:
+    support for large address spaces and page faulting capability.
+  - Therefore, GP100 Unified Memory allows programs to access the full
+    address spaces of all CPUs and GPUs in the system as a single
+    virtual address space, unlimited by the physical memory size of
+    any one processor.
+- CUDA 6+ Kepler Maxwell
+  - CUDA 6 introduced Unified Memory, which creates a pool of managed
+    memory that is shared between the CPU and GPU, bridging the
+    CPU-GPU divide. Managed memory is accessible to both the CPU and
+    GPU using a single pointer.
+  - CUDA 6 Unified Memory was limited by the features of the Kepler
+    and Maxwell GPU architectures: all managed memory touched by the
+    CPU had to be *synchronized* with the GPU before any kernel launch;
+    the CPU and GPU could not simultaneously access a managed memory
+    allocation; and the Unified Memory address space was limited to
+    the size of the GPU physical memory.
+*** NVLink
+:PROPERTIES:
+:CUSTOM_ID: nvlink
+:ID:       438f5422-92d2-44dc-862b-bdec2d3b3095
+:END:
+- Tesla P100 for NVLink-enabled Servers
+- Напомним, одной из особенностей стал интерфейс связи между
+  несколькими графическими NVIDIA. NVLink распределяет нагрузку между
+  GPU, увеличивая пропускную способность в 5 раз. NVIDIA NVLink
+  позволяет связать вместе до восьми карт Tesla P100. Двунаправленный
+  интерфейс NVIDIA NVLink обладает скоростью 160 ГБ/с.  Как отмечает
+  NVIDIA, Tesla P100 — первый ускоритель со скоростью вычислений
+  двойной и одинарной точности в 5 и 10 терафлопс соответственно.
+- NVIDIA® NVLink™ – это высокоскоростное и энергоэффективное
+  внутреннее соединение, которое обеспечивает ультрабыстрый обмен
+  данными между CPU и GPU, а также между GPU. Эта технология обеспечит
+  от 5 до 12 раз более быстрый обмен данными по сравнению с
+  традиционным внутренним соединением PCIe Gen3.
+- NVLink — высокопроизводительная компьютерная шина, использующая
+  соединение точка-точка, дифференциальные сигналы со встроенным
+  синхросигналом и каналы, называемые «блоки», в каждом по 8 пар со
+  скоростью 20 Гбит/с. Таким образом каждый блок предоставляет
+  возможность передачи примерно 20 гигабайт в секунду.
+- Предполагается, что NVLink будет использовать мезонинный
+  разъем. Программная модель интерфейса NVLink схожа с PCI
+  Express. По интерфейсу NVLink несколько GPU будут связываться
+  друг с другом, а в дальнейшем планируется использовать его для связи
+  GPU и центрального процессора (возможно, с архитектурой IBM
+  [[#power8][POWER]]), и добавление в интерфейс протоколов
+  кеш-когерентности.
+- The NVLink technology on the POWER platform provides coherency among
+  the multiple memory hierarchies in the CPUs and GPUs.
+- But most of this power will be wasted unless GPUs learn to exchange
+  data with CPUs at faster speeds. For years, Nvidia has been working
+  on a technology that could do just that, and it looks like NVLink is
+  finally ready for action.
+- Server-side GPU acceleration is a hot topic: earlier this year
+  Nvidia launched Tesla P100, calling it “the most advanced data
+  center GPU ever built’. Intel is pushing ahead with its Xeon Phi,
+  claiming it is more than a match for Nvidia’s hardware, and AMD is
+  steadily improving its FirePro range.
+**** NVLink 1.0 
+- Пропускная способность интерфейса используемого в GPU NVIDIA Pascal GP100 (2016 год):
+  - 20 Гбит/с на контакт;
+  - 40 Гбайт/с на один порт;
+  - 160 Гбайт/с (4 × 40 Гбайт/с) на один GPU.
+**** NVLink 2.0 (2017)
+*** Tesla P100 for PCIe-Based Servers
+** POWER 8
+:PROPERTIES:
+:CUSTOM_ID: power8
+:ID:       858126b4-6dfd-487c-8840-5859d84b3fe1
+:END:
+- [[https://www.microway.com/product/openpower-gpu-server-nvidia-tesla-p100-nvlink-gpus/][OpenPOWER GPU Server with NVIDIA Tesla P100 NVLink GPUs]]
+- https://servernews.ru/931493
+  - Для того чтобы получить все преимущества от NVIDIA Tesla P100 с
+    шиной NVLink, программистам придётся переделать свои программы под
+    IBM POWER8. IBM и NVIDIA намерены создать сеть лабораторий, чтобы
+    помочь разработчикам приложений портировать свои программы на новые
+    высокопроизводительные вычислительные платформы. Эти лаборатории
+    будут очень важны не только для IBM и NVIDIA, но и для будущего
+    высокопроизводительных систем в целом. Гетерогенные суперкомпьютеры
+    могут предложить очень высокую производительность, но для того,
+    чтобы использовать их в полной мере, необходимы новые методы
+    программирования.
+- Представлен в 2013 году, изготовлен по 22 нм SOI. 6 или 12 ядер на
+  чип, тактовая частота от 2.5 до 5 ГГц, каждое ядро исполняет
+  одновременно до 8 потоков. процессор имеет общий кэш L3 размером 48
+  МБ(6-ядерные модели) или 96 МБ (12-ядерные модели). В процессор
+  встроены высокопроизводительные контроллеры памяти (DDR3/DDR4) и
+  системных каналов ввода-вывода (CAPI port на основе PCI
+  Express3.0 в том числе, для подключения ASIC, FPGA,
+  GPU. Питанием процессора управляет встроенный микроконтроллер на
+  базе PowerPC 405 с 512 килобайтами SRAM памяти, настраивая 1764
+  встроенных регуляторов напряжения. Векторно-скалярное устройство
+  процессора,для работы с числами c плавающей запятой выдает до 8
+  результатов с плавающей запятой двойной точности, что обеспечивает
+  пиковую производительность 384 GFLOPS на процессор. Для многих видов
+  нагрузок процессор POWER8 показывает прирост производительности в
+  2-3 раза по сравнению с предыдущим процессором POWER7.
+- IBM has launched a version of the Power8 processor that features
+  Nvidia’s NVLink, a high-performance interconnect technology that
+  sits between GPU and CPU.
+  - The chip has been released as part of a new Power System server, the
+    S822LC for High Performance Computing.
+  - IBM has also launched two servers without NVLink: the Power System
+    S821LC and the Power System S822LC for Big Data.
+*** Cell
+Cell совмещает ядро общего назначения архитектуры [[#power][POWER]] с
+сопроцессорами, которые значительно ускоряют обработку мультимедиа
+и векторных вычислений.
+
+[[https://parallel.ru/computers/cell.html][parallel: Процессор CELL]]
+
+**** PowerXCell
+**** PowerPC Element
+*** POWER
+:PROPERTIES:
+:CUSTOM_ID: power
+:ID:       00567ea2-be80-4d73-8b3d-bcc5557f52e9
+:END:
+- POWER — микропроцессорная архитектура с ограниченным набором команд
+  (RISC), разработанная и развиваемая компанией IBM. Название позже
+  было расшифровано как Performance Optimization With Enhanced RISC
+  (оптимизация производительности на базе расширенной архитектуры
+  RISC). Этим словом также называется серия микропроцессоров,
+  использующая указанный набор команд. Они применяются в качестве
+  центрального процессора во многих микрокомпьютерах, встраиваемых
+  системах, рабочих станциях, мейнфреймах и суперкомпьютерах.
+- Он содержал тридцать два 32-разрядных целочисленных регистра и ещё
+  тридцать два 64-разрядных регистра с плавающей точкой, каждый в
+  своём разделе. Кроме того, имелось несколько регистров для
+  внутренних нужд внутри блока ветвления, в частности, счётчик адреса.
+- Тогда как 801 был простым устройством, чрезмерное количество
+  дополнений превратили его в сложный процессор, гораздо сложнее
+  большинства конкурирующих RISC-изделий. Например, набор команд POWER
+  (и PowerPC) включает более 100 опкодов переменной длины, многие из
+  которых являются модификациями друг друга. Для сравнения:
+  архитектура ARM располагает только 34 инструкциями.
+- В конструкцию заложено и одно необычное свойство: виртуальное
+  адресное пространство. Все адреса во время работы конвертируются в
+  52-битное представление, таким образом получается, что каждая
+  программа обладает плоским 32-битным пространством адресов, но при
+  этом каждая может занимать эти блоки произвольно.
+* обзор
+- Ломоносов
+  - [[http://www.msu.ru/lomonosov/science/computer.html][msu.ru Суперкомпьютер "Ломоносов"]]
+  - [[https://parallel.ru/cluster/lomonosov.html][parallel lomonosov]]
+  - Clustrx T-Platforms Edition (Linux)
+
+- Исследование возможностей GPU в высокопроизводительных вычислениях
+  - Статья посвящена исследованию вопроса эффективности в
+    высокопроизводительном гибридном вычислительном кластере на основе
+    графических процессоров (GPU). Автор обращает особое внимание на
+    формирование программно-математического окружения для проведения
+    исследования в направлении производительности кластера
+    параллельных вычислений с помощью теста Linpack, раскрывающего
+    зависимость производительности кластера от увеличения расчетной
+    нагрузки. Приведенные в статье результаты исследования
+    используются в построении входных данных при подготовке моделей
+    Ansys, Capvidia FlowVision.
+  - Ключевые слова: графический процессор, кластер, эффективная
+    производительность, высокопроизводительные вычисления, размерность
+    задачи, гибридный узел, флопс.
+  - Исходный код Linpack для GPU (CUDA-enabled version of HPL 2.0
+    optimized for Tesla 20-series GPU Fermi version 1.5) соответствует
+    алгоритмам версии 2.0 для CPU. В качестве подключаемых
+    библиотек Линейной Алгебры (BLAS) для HPL версии 2.0 использовался
+    пакет INTEL MKL из Intel Composer 2013.3.163. В качестве
+    подключаемых библиотек для использования NVIDIA Tesla K20Xm
+    использовался пакет NVIDIA CUDA 5. Для сборки программного
+    обеспечения Linpack использовался компилятор GCC 4.4.
+
+- [[http://samag.ru/archive/article/3202][Исследование воздействия некоторых параметров теста LINPACK]] (2016, Ломоносов)
+  - При решении систем линейных алгебраических уравнений на
+    современных гибридных (CPU + GPU) кластерах перед пользователем
+    возникает задача выбора значений ряда параметров, оказывающих
+    существенное, но неочевидное влияние на производительность
+    вычислений и, как следствие, на временные, а следовательно, и
+    технические затраты на решение задачи. Существующие рекомендации
+    по выбору значений этих параметров носят оценочный характер и не
+    гарантируют достижения максимальной производительности вычислений
+    при заданной размерности системы линейных алгебраических
+    уравнений. Целью работы является экспериментальное исследование
+    влияния значений параметров Nb и CUDA_DGEMM_SPLIT теста LINPACK,
+    представляющего собой решение модельной системы линейных
+    алгебраических уравнений методом LU-разложения, на
+    производительность вычислений на гибридных узлах кластера
+    «Ломоносов» (МГУ, Москва). Получены рекомендательные данные
+    значений параметров Nb и CUDA_DGEMM_SPLIT в зависимости от
+    размерности системы линейных алгебраических уравнений для
+    достижения максимальной производительности при решении системы
+    линейных алгебраических уравнений методом LU-разложения на
+    гибридных вычислительных узлах кластера «Ломоносов». Построенная в
+    работе рекомендательная таблица для кластера «Ломоносов» позволяет
+    однозначно выбирать значения параметров Nb и CUDA_DGEMM_SPLIT в
+    зависимости от размерности системы линейных алгебраических
+    уравнений для достижения максимальной производительности
+    вычислений.
+  - В настоящей статье приведены результаты дальнейших исследований,
+    касающиеся эффективности вычислений теста LINPACK при изменении
+    параметров Nb (величина размерности логических блоков Nb × Nb, на
+    которые разбивается исходная матрица) и CUDA_DGEMM_SPLIT (процент
+    работы, загружаемой в GPU для умножения матриц сдвойной
+    точностью), тесно связанных с аппаратной структурой вычислительных
+    узлов кластера.
+  - Основное отличие LINPACK для GPU заключается в том, что в исходном
+    коде HPL 2.0 ядра и CPU, и GPU с небольшими модификациями или без
+    модификаций используются совокупно (эффективность совокупности CPU
+    и GPU превышает сумму их индивидуальных эффективностей):
+    - Библиотека узла прерывает вызовы к DGEMM и DTRSM ивыполняет
+      их одновременно на ядрах CPU иGPU, где:
+      - DGEMM – Double-precision General Matrix Multiply – умножение
+        матриц с двойной точностью;
+      - DTRSM – Double-precision TRiangular Solve Multiple (solution
+        of the triangular systems of linear equations) – решение
+        треугольных систем линейных уравнений с двойной точностью.
+    - Использование pinned memory для быстрых передач данных по
+      компьютерной шине PCI Express со скоростью до 5.7 GB/s на слотах
+      x16 gen2.
+
+
+- Тестирование суперкомпьютеров
+  - Учебный курс «Технологии построения и использования кластерных систем» 2007
+    - http://www.hpcc.unn.ru/multicore/materials/cluster/performance_test.pdf
+    - Необходимость тестирования
+      - самодиагностика
+	- Cluster Management System (CMS)
+      - существенные характеристики
+  - [[http://num-meth.srcc.msu.ru/zhurnal/tom_2013/pdf/v14r216.pdf][Комплексная методика тестирования производительности суперкомпьютеров]]
+    - Рассматривается рейтинговое и профессиональное (комплексное и
+      углубленное) оценочное тестирование. Оба подхода представляют
+      интерес. Это демонстрируется сначала на примере анализа динамики
+      результатов рейтингового тестирования последних лет,
+      позволившего выявить устойчивую тенденцию развития
+      суперкомпьютеров в сторону повышения эффективности решения задач
+      с интенсивной нерегулярной работой с памятью. Далее
+      рассматриваются схемы применения профессионального оценочного
+      тестирования при оценке и разработке суперкомпьютеров, а также
+      пример такой методики, применяемой авторами. Эта методика
+      особенна своей многоуровневостью и разноплановостью на уровнях,
+      обеспечиваемой тестами разной направленности и специальным
+      образом изменяемой нагрузкой на оборудование. Сообщается о
+      вариантах практического применения методики и использования ее
+      результатов при оптимизации программ и создании перспективного
+      системного программного обеспечения.
+      - Ключевые слова: pейтинговое тестирование, комплексное
+	тестирование, задачи с интенсивной нерегулярной работой с
+	памятью, многоуровневое оценочное тестирование,
+	пространственно-временная локализация обращений к памяти,
+	оптимизация задержек обращений к памяти, оптимизация
+	толерантности к задержкам обращений к памяти, системы поддержки
+	выполнения программ, программная эмуляция мультитредовых
+	архитектур
+    - DIS-задачи (Data Intensive Systems), отличающиеся плохой
+      пространственно-временн́ой локализацией и непредсказуемость ю
+      адресов обращений к памяти, а также высокой интенсивностью
+      операций с памятью в сравнении с вычислительными
+    - СF-задачи (Cache-Friendly, “дружественные” к кэш-памяти),
+      имеющие хорошую пространственно-временн́ую локализацию и
+      предсказуемость адресов обращений к памяти;
+    - Это должно повысить толерантность приложения к задержкам
+      выполнения операций с памятью, предоставив одновременно
+      возможность комфортной работы с огромной глобально адресуемой
+      памятью, отображаемой на физические памяти множества узлов.
+    - Динамика трех рейтинговых списков демонстрирует актуальность
+      характеристик, связанных с выполнением операций с
+      памятью. Отметим, что такие характеристики были заложены в
+      основу базовой методики оценочного тестирования, применяемой в
+      Центре, которая будет рассмотрена далее. Однако сначала
+      остановимся на разных схемах использования методик оценочного
+      тестирования.
+
+  - http://www.siam.org/meetings/ex14/02-oberlin-slides.pdf
+    - Accelerating Exascale
+      - How the End of Moore’s Law Scaling is Changing the Machines
+        You Use, the Way You Code, and the Algorithms You Use
+    - Pascal NVLink
+    - LINPACK vs. Real Apps
+    - Programmers, Tools, and Architecture Need to Play Their Positions
+    - Exascale (25x) is Within Reach
+      - Requires clever circuits and ruthlessly-efficient architecture
+	- Moore’s Law cannot be relied upon
+      - Need to simplify programming and automate mapping
+	- “MPI + X” is only a step in the right direction 
+* ИНТУИТ
+
+[[http://www.intuit.ru/studies/courses/3457/699/lecture/14133?page=2][Лекция 2]]: Методы оценки вычислительных характеристик задач предметной
+области и поддерживающих их аппаратных платформ
+
+** Особенности измерения основных характеристик вычислительных систем
+
+- Сравнение компьютеров между собой обычно начинают с оценки их
+  производительности. Это потребовало введения соответствующих единиц
+  измерения производительности и разработки стандартных методов ее
+  оценки.
+
+
+- Тест LINPACK используется при составлении рейтинга самых
+  высокопроизводительны компьютеров мира. Результаты размещаются на
+  сайте http://www.top500.org/.
+
+В основе используемых в LINPACK алгоритмов лежит метод декомпозиции,
+широко применяемый при высокопроизводительных
+вычислениях. Достоинством тестов LINPACK является их
+структурированность. Для реализации элементарных операций над
+векторами, которые включаю умножение векторов на скаляр, сложение
+векторов, скалярное произведение векторов выделяется базовый уровень
+системы, называемый BLAS (Basic Linear Algebra Subprograms).
+
+* fksis
+
+[[http://s1.fksis.ru/abc/%D0%A2%D0%B5%D0%BE%D1%80%D0%B8%D1%8F/content/ak2/theme13.htm][13]]. Оценка производительности вычислительных систем
+
+Одной из наиболее известных систем оценки является тест LINPACK,
+представляющий собой пакет программ на языке Фортран, предназначенных
+для решения систем линейных алгебраических уравнений больших
+размерностей (до нескольких миллионов неизвестных) с плотной матрицей
+методом Гаусса с выбором главного элемента. Имеется несколько
+разновидностей этого теста, например, LINPACK TPP (от Toward Peak
+Performance – направляющийся к пиковой производительности) и HPL (от
+High-Performance LINPACK – высокопроизводительный LINPACK).
+
+* top500
+
+** IBM Ups Its Game with the Power9 Processor 
+
+https://www.top500.org/news/ibm-ups-its-game-with-the-power9-processor/
+
+
+Speaking of which, there is special support for NVIDIA GPUs in the
+form of NVLink 2.0 support, which promises much faster communication
+speeds than vanilla PCIe.
