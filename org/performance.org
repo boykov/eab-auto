@@ -81,6 +81,70 @@
     - Шестой уровень: тесты модельных приложений, а также операционной
       системы и системы планирования прохождения заданий.
 
+* TODO развертывание кластера с помощью xCAT
+- см. также [[#implementing-s822lc][s822lc]]
+** xcat 2 Extreme Cloud Administration Toolkit
+- [[http://docplayer.net/3806990-Xcat-2-extreme-cloud-administration-toolkit.html][презентация]]
+  - xCAT Architecture & Basic Functionality
+    - "Nodes" are anything that require an IP address:
+      - Servers, server IMM/BMCs
+      - Switches, storage controllers, PDUs, etc.
+    - XCAT provides a choice – conventional state-full installs to disk,
+      state-less installs with no persistent media, and state-lite
+      installs with persistent media NFS mounted.
+    - Statelite advantages over Stateless
+      - Some files can be made persistent over reboot. However, you
+	still get the advantage of only having to manage a single image
+      - Changes to hundreds of machines can take place instantly, and
+	automatically, by updating one main image. In most cases,
+	machines do not need to reboot for these changes to take
+	affect. (only for the NFSROOT-based solution)
+      - Ease of administration by being able to lock down an
+	image. Parts of the image can be read-only - so no modifications
+	can be made without updating the central image
+      - Files can be managed . You can set table values to allow
+	machines to sync from different places based on their
+	attributes: think overlays
+      - Ideal for virtualization. Images can be smaller, use less disk
+	and memory, and can be easier to manage
+    - Statelite disadvantages compared to Stateless
+      - Network traffic is not just at node boot time
+      - NFS and scaling
+      - While more flexible it does require more initial configuration
+	to work
+      - Some limitations on target environments. Mostly a testing
+	problem
+  - xCAT Commands
+    - xCAT Commands used on the CLI interface can be divided in several groups
+      - Database support
+        - chtab, chdef, nodels, mkrrbc, mkrrnodes, modech, tabdump
+      - Hardware control
+	- getmacs, rcons, renergy, rnetboot, reventlog
+      - Monitoring
+	- monadd, monls, monstart, monstop
+      - Inventory
+        - rinv, rvitals, sinv
+      - Parallel commands
+        - pscp, psh, prsync, pping
+      - Deployment
+        - copycds, genimage, liteimg
+      - CSM to xCAT migration Tools
+      - Others
+        - makenetworks, makehost, makedhcp
+    - xCAT [[http://xcat-docs.readthedocs.io/en/latest/guides/admin-guides/references/man3/noderange.3.html][noderange]]
+  - Setting Up an xCAT Cluster
+    - Prior to installing the Management Node, the administrator
+      should already have an idea of how the overall cluster will look
+      post-configured.
+      - Internal Node naming scheme
+      - Networks and IP addresses for every node on each net
+      - Storage disk drive and filesystem layout
+      - Linux version(s) to be used
+      - Node or resource groups
+      - Resource manager/scheduler
+      - Cluster authentication method
+      - License managers/services inside/outside the cluster
+
 * Обзорные работы, публикуемые организациями для своих вычислительных систем
 - Т-Платформы, Ломоносов, 2012 [[http://www.t-platforms.ru/images/pdfsolutions_RUS/%D0%A1%D1%83%D0%BF%D0%B5%D1%80%D0%BA%D0%BE%D0%BC%D0%BF%D1%8C%D1%8E%D1%82%D0%B5%D1%80%20%D0%9B%D0%BE%D0%BC%D0%BE%D0%BD%D0%BE%D1%81%D0%BE%D0%B2.pdf][link]]
 - Отчет о введении гибридного кластера ФМБФ в эксплуатацию 2010
@@ -347,6 +411,72 @@ Cell совмещает ядро общего назначения архите�
 - Operating systems
   - Linux on POWER
     - Ubuntu 16.04.1 LTS ppc64el on S822LC
+
+*** Implementing an IBM High-Performance Computing Solution on IBM Power System S822LC
+:PROPERTIES:
+:CUSTOM_ID: implementing-s822lc
+:ID:       4e8e265c-1dd2-43a7-a1cb-a47f5e425b75
+:END:
+- Selective Contents cite:quintero2016implementing
+  - Chapter 2. Reference architecture
+  - Chapter 3. Hardware components
+  - Chapter 4. Software stack
+    - 4.2 OPAL firmware
+    - 4.3 xCAT
+    - 4.4 RHEL server
+    - 4.5 NVIDIA CUDA Toolkit
+    - 4.6 Mellanox OFED for Linux
+    - 4.7 IBM XL compilers, GCC, and Advance Toolchain
+    - 4.8 IBM Parallel Environment
+    - 4.9 IBM Engineering and Scientific Subroutine Library and Parallel ESSL
+    - 4.10 IBM Spectrum Scale (formerly IBM GPFS)
+    - 4.11 IBM Spectrum LSF (formerly IBM Platform LSF)
+  - Chapter 5. Software deployment
+    - 5.2 System management
+      - 5.2.1 Build instructions for IPMItool
+	- IPMI – это набор спецификаций, регламентирующих, как общаться и что предоставлять.
+	  - BMC – это обертка из железа для работы IPMI. Представляет собой
+	    одноплатный (system on а chip) с щупальцами в сенсорах основного.
+	  - IBM IMM (Integrated Management Module)
+    - 5.3 xCAT overview
+    - 5.4 xCAT Management Node
+    - 5.5 xCAT Node Discovery
+    - 5.6 xCAT Compute Nodes
+    - 5.7 xCAT Login Nodes
+  - Chapter 6. Application development and tuning
+    - 6.2 Engineering and Scientific Subroutine Library
+    - 6.4 Using POWER8 vectorization
+    - 6.5 Development models
+      - 6.5.1 MPI programs with IBM Parallel Environment
+      - 6.5.2 CUDA C programs with the NVIDIA CUDA Toolkit
+      - 6.5.3 Hybrid MPI and CUDA programs with IBM Parallel Environment
+      - 6.5.4 OpenMP programs with the IBM Parallel Environment
+      - 6.5.5 OpenSHMEM programs with the IBM Parallel Environment
+      - 6.5.6 Parallel Active Messaging Interface programs
+    - 6.6 GPU tuning
+    - 6.7 Tools for development and tuning of applications
+      - 6.7.1 The Parallel Environment Developer Edition
+      - 6.7.2 IBM PE Parallel Debugger
+      - 6.7.3 Eclipse for Parallel Application Developers
+      - 6.7.4 NVIDIA Nsight Eclipse Edition for CUDA C/C++
+      - 6.7.5 Command-line tools for CUDA C/C++
+  - Chapter 8. Cluster monitoring
+    - 8.1 IBM Spectrum LSF tools for monitoring
+    - 8.2 nvidia-smi tool for monitoring GPU
+  - Appendix A. Applications and performance
+    - Application software
+      - Bioinformatics
+      - OpenFOAM
+      - NAMD program
+    - Effects of basic performance tuning techniques
+      - The performance impact of a rational choice of an SMT mode
+      - The impact of optimization options on performance
+      - Summary of favorable modes and options for applications from the NPB suite
+      - The importance of binding threads to logical processors
+    - General methodology of performance benchmarking
+    - Sample code for the construction of thread affinity strings
+    - ESSL performance results
+
 * Литература
 - Ломоносов
   - [[http://www.msu.ru/lomonosov/science/computer.html][msu.ru Суперкомпьютер "Ломоносов"]]
