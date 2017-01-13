@@ -26,16 +26,35 @@
 ** Бенчмарки и тесты
 
 - [[https://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=POD03117USEN][буклет]] IBM Power System S822LC for High Performance Computing
-  - Kinetica “Filter by geographic area” queries on data set of 280
-    million simulated Tweets with 1 up to 80 concurrent query streams
-    each with 0 think time
-  - LatticeQCD
-  - SOAP3-dp
-  - CPMD, a parallelized plane wave /pseudopotential implementation of
-    Density Functional Theory. A Hybrid version of CPMD (e.g. MPI +
-    OPENMP + GPU + streams)
-  - High Performance Conjugate Gradients (HPCG) Benchmark http://www.hpcg-benchmark.org/
+  - The combination of NVLink and NVIDIA Tesla P100 GPUs delivers
+    unprecedented performance across multiple workloads compared to
+    x86 with Tesla K80 GPUs:
+    - Kinetica “Filter by geographic area” queries on data set of 280
+      million simulated Tweets with 1 up to 80 concurrent query streams
+      each with 0 think time
+    - LatticeQCD
+    - SOAP3-dp
+    - CPMD, a parallelized plane wave /pseudopotential implementation of
+      Density Functional Theory. A Hybrid version of CPMD (e.g. MPI +
+      OPENMP + GPU + streams)
+    - High Performance Conjugate Gradients (HPCG) Benchmark http://www.hpcg-benchmark.org/
 
+- Implementing an IBM High-Performance Computing Solution on IBM Power
+  System S822LC cite:quintero2016implementing
+  - POWER8 with Tesla K80 GPUs (8335-GTA)
+  - Appendix A. Applications and performance
+    - Application software
+      - Bioinformatics
+      - OpenFOAM
+      - NAMD program
+    - Effects of basic performance tuning techniques
+      - The performance impact of a rational choice of an SMT mode
+      - The impact of optimization options on performance
+      - Summary of favorable modes and options for applications from the NPB suite
+      - The importance of binding threads to logical processors
+    - General methodology of performance benchmarking
+    - Sample code for the construction of thread affinity strings
+    - ESSL performance results
 
 - Комплексная методика тестирования производительности суперкомпьютеров cite:gorbunov2013komplexnaya
   - Класс DIS-задач представляют тест
@@ -386,7 +405,7 @@ Cell совмещает ядро общего назначения архите�
   программа обладает плоским 32-битным пространством адресов, но при
   этом каждая может занимать эти блоки произвольно.
 
-** S822LC
+** S822LC 8335-GTB Model
 
 - Server-side GPU acceleration
   - But most of this power will be wasted unless GPUs learn to
@@ -439,6 +458,8 @@ Cell совмещает ядро общего назначения архите�
 	    одноплатный (system on а chip) с щупальцами в сенсорах основного.
 	  - IBM IMM (Integrated Management Module)
     - 5.3 xCAT overview
+      - xCAT manages the nodes in a cluster by using continuous
+        configuration and event handling
     - 5.4 xCAT Management Node
     - 5.5 xCAT Node Discovery
     - 5.6 xCAT Compute Nodes
@@ -463,19 +484,6 @@ Cell совмещает ядро общего назначения архите�
   - Chapter 8. Cluster monitoring
     - 8.1 IBM Spectrum LSF tools for monitoring
     - 8.2 nvidia-smi tool for monitoring GPU
-  - Appendix A. Applications and performance
-    - Application software
-      - Bioinformatics
-      - OpenFOAM
-      - NAMD program
-    - Effects of basic performance tuning techniques
-      - The performance impact of a rational choice of an SMT mode
-      - The impact of optimization options on performance
-      - Summary of favorable modes and options for applications from the NPB suite
-      - The importance of binding threads to logical processors
-    - General methodology of performance benchmarking
-    - Sample code for the construction of thread affinity strings
-    - ESSL performance results
 
 * Литература
 - Ломоносов
