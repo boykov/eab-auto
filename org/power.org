@@ -1,0 +1,6 @@
+#+TITLE: Руководство пользователя кластера OpenPOWER ВЦ ДВО РАН
+#+OPTIONS: toc:nil H:6 num:nil html-postamble:nil ^:nil tags:nil author:nil
+#+SETUPFILE: theme-readtheorg-local.setup
+#+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
+#+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+
