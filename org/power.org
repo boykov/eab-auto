@@ -195,4 +195,34 @@ http://jupiter.febras.net/ganglia.
 
 ** Консоль
 
+#+begin_src raw
+[user@jupiter ~]$ pbsnodes jupiter2
+jupiter2
+     Mom = jupiter2
+     Port = 15002
+     pbs_version = 14.1.0
+     ntype = PBS
+     state = free
+     pcpus = 160
+     resources_available.arch = linux
+     resources_available.host = jupiter2
+     resources_available.mem = 263653568kb
+     resources_available.ncpus = 160
+     resources_available.ngpus = 2
+     resources_available.vnode = jupiter2
+     resources_assigned.accelerator_memory = 0kb
+     resources_assigned.mem = 0kb
+     resources_assigned.naccelerators = 0
+     resources_assigned.ncpus = 0
+     resources_assigned.netwins = 0
+     resources_assigned.ngpus = 0
+     resources_assigned.vmem = 0kb
+     resv_enable = True
+     sharing = default_shared
+
+#+end_src
+
 * Справочная информация
+
+Описание основных команд при работе в ОС Linux – http://wwwinfo.jinr.ru/unixinfo/pc/lin_os.html
+Документация к системе диспетчеризации заданий PBS Torque — http://www.pbsworks.com/pdfs/PBSUserGuide14.2.pdf
