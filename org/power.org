@@ -3,6 +3,12 @@
 #+SETUPFILE: theme-readtheorg-local.setup
 #+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
 #+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+
+#+begin_verse
+Версия: src_emacs-lisp[:results raw]{"*0.1*"}
+Дата: src_emacs-lisp[:results raw]{(format-time-string "*%d.%m.%Y*")}
+#+end_verse
+
 \\
 \\
 Данное руководство содержит минимально необходимый объем информации
@@ -28,11 +34,17 @@
 #+TOC: headlines 3 local
 
 * Регистрация
+:PROPERTIES:
+:CUSTOM_ID: registration
+:END:
 
 Регистрация пользователей на кластере происходит через систему ЦКП
 http://ckp.ccfebras.ru.
 
 * Вход в систему
+:PROPERTIES:
+:CUSTOM_ID: login
+:END:
 
 Для работы с системой пользователь должен иметь свою учетную запись на
 управляющем узле кластера. Регистрация пользователя на кластере
@@ -55,6 +67,9 @@ http://ckp.ccfebras.ru.
 имя и пароль, полученные при регистрации.
 
 ** Вход с Windows-машины
+:PROPERTIES:
+:CUSTOM_ID: login_windows
+:END:
 
 Работа с системой осуществляется по безопасному протоколу SSH при помощи какого-либо
 ssh-клиента. Клиент должен поддерживать протокол версии 2. Рекомендуется использовать 
@@ -94,6 +109,9 @@ ssh и в поле «Host Name (or IP address)» указать адрес
 #+end_src
 
 ** Вход с терминала Linux
+:PROPERTIES:
+:CUSTOM_ID: login_linux
+:END:
 
 В любой дистрибутив ОС Linux входит терминальный ssh-клиент (обычно
 OpenSSH). Минимальный формат команды для подключения к кластеру таков:
@@ -102,29 +120,62 @@ OpenSSH). Минимальный формат команды для подклю
 [user@localhost ~]$ ssh jupiter.febras.net -l имя_пользователя
 #+end_src
 
-* Копирование файлов
+# * Копирование файлов
 
 * Работа на кластере
+:PROPERTIES:
+:CUSTOM_ID: work_cluster
+:END:
 
-** Навигация
+# ** Навигация
 
-*** Консоль
+# *** Консоль
 
-*** mc
+# *** mc
 
-** Редактирование файлов
+# ** Редактирование файлов
 
-*** mc-edit
+# *** mc-edit
 
-*** Emacs, VIM
+# *** Emacs, VIM
 
 ** Компиляция программ
+:PROPERTIES:
+:CUSTOM_ID: compilation
+:END:
 
-*** Замечания по разработке программ на отдельной машине
+На кластере (на src_emacs-lisp[:results raw]{(format-time-string "%d.%m.%Y")})
+ поддерживаются следующие компиляторы языков
+программирования для архитектуры ppc64le:
+
+#+ATTR_HTML: :align center 
+#+caption: Компиляторы на кластере
+| Компилятор            | Путь к файлу компилятора | Язык       |
+| GNU C 4.8.5           | /usr/bin/gcc             | C          |
+| GNU C++ 4.8.5         | /usr/bin/g++             | C++        |
+| GNU Fortran 4.8.5     | /usr/bin/gfortran        | Fortran 90 |
+| IBM XL Fortran 15.1.5 | /usr/bin/xlf             | Fortran 77 |
+| IBM XL Fortran 15.1.5 | /usr/bin/xlf90           | Fortran 90 |
+| IBM XL C 13.1.5       | /usr/bin/xlc             | C          |
+| IBM XL C++ 13.1.5     | /usr/bin/xlc++           | C++        |
+| NVIDIA Cuda 8.0.61    | /usr/local/cuda/bin/nvcc | C/C++      |
+
+
+
+# *** Замечания по разработке программ на отдельной машине
+# :PROPERTIES:
+# :CUSTOM_ID: notes_dev
+# :END:
 
 ** Запуск задач
+:PROPERTIES:
+:CUSTOM_ID: run_tasks
+:END:
 
 *** Диспетчеризация задач
+:PROPERTIES:
+:CUSTOM_ID: dispatch_tasks
+:END:
 
 Для диспетчеризации задач на кластере используется система PBS
 Pro. С её помощью пользователь может отправлять свои задачи на
@@ -145,6 +196,9 @@ Pro. С её помощью пользователь может отправля
 друг от друга совокупностью ресурсов, которыми они обладают.
 
 *** Система очередей
+:PROPERTIES:
+:CUSTOM_ID: queues
+:END:
 
 На данный момент действует 1 очередь: /workq/.
 
@@ -168,14 +222,92 @@ workq              --      --       --     --      0     0   --   E R
 # Команда =qstat -Qf имя_очереди=  позволяет получить информацию о конкретной очереди.
 
 *** Постановка задачи в очередь
+:PROPERTIES:
+:CUSTOM_ID: queue_tasks
+:END:
 
-*** Запуск интерактивных программ
+Для постановки задачи в очередь на исполнение используется команда =qsub=. Данная команда
+принимает в качестве параметра имя скрипта, в котором описываются требуемые задачей ресурсы и
+указываются команды, исполняемые при запуске. Рассмотрим пример, иллюстрирующий запуск ранее
+скомпилированной программы на 1 "порции" кластера, с использованием 2 mpi процессов на каждой.
 
-*** Запуск непараллельных программ
+#+begin_src raw
+[user@jupiter mpi_test]$ cat mpi_test.qsub
+#PBS -k oe
+#PBS -l select=1:mpiprocs=2
+#PBS -r n
+#PBS -M user@mail.com
+#PBS -m abe
+#PBS -q workq
+#PBS -N mpi_test
+#!/bin/sh
 
-*** Состояние пользовательских задач
+cd /home/user/test/mpi_test
+
+module unload spectrum_mpi && module load openmpi/gcc/1.10.6/4.8.5
+mpirun ./mpi
+
+exit 0
+[user@jupiter mpi_test]$ qsub mpi_test.qsub
+66330.jupiter1
+#+end_src
+
+Если команда выполнена успешно, то на экране отобразится идентификатор
+задачи (в данном случае это /66330.jupiter1/), в противном случае
+появится сообщение об ошибке. Ошибки пользовательской программы
+(неправильная компиляция и т.п.) проявятся только при переходе задачи
+к активному состоянию.
+
+#+begin_note
+*Примечание.* Весь вывод программы в стандартный поток и в поток ошибок
+перенаправляется в файлы, находящиеся в домашней директории пользователя.
+Названия таких файлов имеют формат =имя_задачи.(e/o)порядковый_номер=. Для
+запущенной задачи это будут: /mpi_test.e66330/ – для потока ошибок и
+/mpi_test.o66330/ – для стандартного потока вывода.
+#+end_note
+
+Прокомментируем каждую из строчек скрипта =mpi_test.qsub=
+
+=#PBS -k oe= — указание сброса потока вывода (o) и потока ошибок (e)
+
+=#PBS -l select=1:mpiprocs=2= — требуемое количество порций (1) и количество mpi процессов на каждой порции (2)
+
+=#PBS -r n= — является ли задача перезапускаемой (задачей с контрольными точками);
+*y* — является, *n* — не является
+
+=#PBS -M user@mail.com= — почтовый адрес пользователя
+
+=#PBS -m abe= — какие сообщения отправляются на указанный адрес (*a* — ошибка в
+выполнении задачи, *b* — начало выполнения, *e* — завершение
+выполнения)
+
+=#PBS -q workq= — идентификатор очереди
+
+=#PBS -N mpi_test= — название задачи
+
+=#!/bin/sh= — указание необходимого командного интерпретатора
+
+=cd /home/user/test/mpi_test= — переход в директорию с исполняемым файлом
+
+=module unload spectrum_mpi && module load openmpi/gcc/1.10.6/4.8.5= — выбор openmpi вместо spectrum_mpi
+
+=mpirun ./mpi= — запуск приложения
+
+=exit 0= — выход
+
+# *** Запуск интерактивных программ
+# :PROPERTIES:
+# :CUSTOM_ID: interactive
+# :END:
+
+# *** Запуск непараллельных программ
+
+# *** Состояние пользовательских задач
 
 *** Остановка задач
+:PROPERTIES:
+:CUSTOM_ID: stop_tasks
+:END:
 
 Остановка программы производится командой =qdel идентификатор_задачи=
 #+begin_src raw
@@ -191,8 +323,14 @@ workq              --      --       --     --      0     0   --   E R
 быть отражена в таблице.
 
 * Мониторинг
+:PROPERTIES:
+:CUSTOM_ID: monitoring
+:END:
 
 ** Web-интерфейс
+:PROPERTIES:
+:CUSTOM_ID: web_interface
+:END:
 
 Мониторинг кластера реализован при помощи системы Ganglia. Эта система позволяет следить
 за ресурсами кластера посредством web-интерфейса. Система мониторинга находится по адресу 
@@ -206,6 +344,9 @@ http://jupiter.febras.net/ganglia.
 
 
 ** Консоль
+:PROPERTIES:
+:CUSTOM_ID: console
+:END:
 
 #+begin_src raw
 [user@jupiter ~]$ pbsnodes jupiter2
@@ -235,6 +376,9 @@ jupiter2
 #+end_src
 
 * Справочная информация
+:PROPERTIES:
+:CUSTOM_ID: reference
+:END:
 
 Описание основных команд при работе в ОС Linux – http://wwwinfo.jinr.ru/unixinfo/pc/lin_os.html
-Документация к системе диспетчеризации заданий PBS Torque — http://www.pbsworks.com/pdfs/PBSUserGuide14.2.pdf
+Документация к системе диспетчеризации заданий PBS Pro — http://www.pbsworks.com/pdfs/PBSUserGuide14.2.pdf
