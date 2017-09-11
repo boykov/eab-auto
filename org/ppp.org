@@ -1,0 +1,81 @@
+#+TITLE: Прикладные программные средства на OpenPower кластере
+#+OPTIONS: toc:t H:6 num:t html-postamble:nil ^:nil tags:nil author:nil
+#+SETUPFILE: theme-readtheorg-local.setup
+#+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
+#+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+#+HTML_HEAD: <style> p {text-align: justify; } </style>
+#+MACRO: fa @@html:<i class="fa fa-$1"></i>@@
+
+\\
+
+#+begin_quote
+Какие ППП установлены, отлажены, оттюнингованы. Документация, пример запуска, планировщик.
+#+end_quote
+
+- {{{fa(book)}}} http://projects.ccfebras.ru/projects/kb/wiki/PowerUserDoc
+- {{{fa(users)}}} http://projects.ccfebras.ru/projects/grid/issues
+
+
+
+- {{{fa(user-o)}}} Пакеты прикладных программ
+  - Quantum ESPRESSO 5.4, 6.0
+    - PLUMED, QE-GIPAW, WEST
+  - ABINIT 8.2
+  - {{{fa(file-text-o)}}} Заявки ЦКП http://ckp.ccfebras.ru
+    - {{{fa(check-square-o)}}} Уже установленные
+      - 70. C++, OpenACC, CUDA
+      - 229. ESSL
+      - 134. fortran, python 2.7
+      - 233. Современные компиляторы языка С++ (стандарт С++ 14) и расширений (CUDA) для поддержки вычислений на GPU
+    - {{{fa(windows)}}} MS Windows
+      - 78. OpenCL (>0.9), Mono, .Net Framework 4.5
+      - 79. MS Visual Studio (13, 15) SDK for Open CL (6)
+    - {{{fa(linux)}}} CentOS и Ubuntu
+      - 74. numpy, tensorflow-gpu, CUDA® Toolkit 8.0 (with drivers), cuDNN v5.1, libcupti-dev, keras
+      - 195. Операционная система ubuntu, Docker >= 1.9, NVIDIA drivers >= 340.29, nvidia-docker-plugin (см. https://github.com/NVIDIA/nvidia), docker TensorFlow 1.2 with GPU support, numpy virtualenv tmux
+      - 232. Python 2.7 64-bit, CUDA 8.0, TensorFlow, cuDNN 6.1
+      - 228. ОС Debian, ansible, container
+    - {{{fa(spinner)}}} Незавершенные
+      - 219. PyCUDA, GRASS, snap-engine, gdal, pygrass, proj4, geos
+	- задача вычисляется на кластере x86
+      - 215. GAMESS-US
+	- {{{fa(ticket)}}} 954 Ошибка при сборке программы, связанная с архитектурой ppc64le
+      - 230. VASP
+- {{{fa(terminal)}}} Системный софт
+  - Стандартные библиотеки
+    - glibc.ppc64le - 2.17
+    - glib2.ppc64le - 2.46.2
+    - libstdc++.ppc64le - 4.8.5
+  - Компиляторы
+    - IBM XL C/C++ for Linux - 13.1.5
+    - IBM XL Fortran for Linux - 15.1.5
+    - NVIDIA Cuda compiler - 8.0.61
+    - PGI Compilers - 16.10
+    - PGI Compilers - 17.4
+    - gcc.ppc64le - 4.8.5
+    - gcc-c++.ppc64le - 4.8.5
+    - gcc-gfortran.ppc64le - 4.8.5
+    - libgcc.ppc64le - 4.8.5
+  - MPI
+    - IBM Spectrum MPI - 10.1.0.3
+    - OpenMPI - 1.10
+  - Математические и параллельные библиотеки
+    - IBM ESSL - 5.5
+    - NVIDIA cuDNN - 5.1
+  - environment-modules
+    #+begin_src sh
+$ module avail
+------------------------------------------------- /etc/modulefiles -------------------------
+cuda                      essl                      openmpi/pgi/1.10.2/2017   pgi/17.4
+cudnn/5.1                 mpi/mvapich2-ppc64le      openmpi/xl/1.10.6         pgi/2016
+espresso/cpu/5.4          openmpi/gcc/1.10.6/4.8.5  openmpi/xl/2.0.2a1        pgi/2017
+espresso/gpu/5.4          openmpi/gcc/2.0.2a1/4.8.5 openmpi/xl/2.1.0          singularity
+espresso/gpu/5.4-esslcuda openmpi/gcc/2.1.0/4.8.5   pbs                       spectrum_mpi
+espresso/gpu/6.0          openmpi/pgi/1.10.2/2016   pgi/16.10(default)
+    #+end_src
+    #+begin_src sh
+$ module list
+  1) pbs            2) cuda           3) essl           4) spectrum_mpi
+    #+end_src
+  - {{{fa(ship)}}} Контейнеры, Singularity
+- {{{fa(tasks)}}} Планировщик PBS Pro

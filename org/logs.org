@@ -5,3 +5,87 @@
 #+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
 #+HTML_HEAD: <style> p {text-align: justify; } </style>
 
+# Сохранить возможность просмотра логов средствами src_sh[:exports code]{docker logs}.
+#+begin_quote
+1) Организовать перенаправление средствами Openshift логов Docker в EFK.
+2) Написать роль для прописывания в конфигурацию openshift(развернутого на Ubuntu) -  логирования в elk/efk стек.
+
+As an OpenShift Origin cluster administrator, you can deploy the EFK stack to [[https://docs.openshift.org/latest/install_config/aggregate_logging.html][aggregate logs]] for a range of OpenShift Origin services. 
+
+The openshift-ansible [[https://github.com/openshift/openshift-ansible/tree/master/roles/openshift_logging][openshift_logging role]] orchestrates the deployment of the logging stack including: resource definitions, key/cert generation, component start and stop order.
+#+end_quote
+
+#+begin_note
+If you are not using the provided Kibana and Elasticsearch images, you will not have the same multi-tenant capabilities and your data will not be restricted by user access to a particular project.
+#+end_note
+
+2. Openshift, равернутый на Ubuntu.
+
+Есть бинарник openshift, который запускается на Linux, в т.ч. и под Ubuntu.
+Есть инфраструктура развертывания кластера Openshift --- openshift-ansible, которая работает под CentOS.
+
+#+begin_html
+<a onclick="toggleDiv2('centos',$(this));" class="fa fa-caret-right"> 1. openshift centos</a>
+#+end_html
+
+#+HTML: <div id="centos" style="display:none">
+
+_Статус по задаче_:
+
+Был выбран самый простой и быстрый способ развертывания кластера с подключенным перенаправлением логов через src_sh[:exports code]{oc cluster up --logging=true}, не требующий ничего, кроме бинарника OpenShift Client и установленного докера (использовался хост с Ubuntu) с дополнительной настройкой демона src_sh[:exports code]{--insecure-registry 172.30.0.0/16}.
+
+Далее был создан проект src_sh[:exports code]{test} и протестирована функциональность перенаправления логов в EFK: cсылка *View Archive* на вкладке Logs для конкретного *pod*, обеспечивающая переход на сервис Kibana, работает, логи доступны в Kibana.
+
+*Использование ansible*. Запуск src_sh[:exports code]{oc cluster up} вызывает bootstrap-сценарий развертывания, при котором создается контейнер openshift-ansible-logging-job, выполняющий необходимую работу по базовой настройке перенаправления логов. При этом задействованы всего 8 параметров роли *openshift_logging*.
+
+_Дальнейшие действия_:
+
+Можно смотреть в сторону доработки возможностей аггрегирования логов (оставаясь на текущей, простой в установке, конфигурации кластера), тогда желательно сформулировать направление, по которому будет вестись работа (например, *journald* или какие-то конкретные настройки).
+
+Или можно сосредоточиться на развертывании кластера вручную (не используя bootstrap) с выполнением необходимых шагов установки и конфигурировании параметров роли.
+
+Пространства имен кластера:
+#+begin_src raw
+NAMESPACE   NAME                                 REVISION   DESIRED   CURRENT   TRIGGERED BY
+default     dc/docker-registry                   1          1         1         config
+default     dc/router                            1          1         1         config
+logging     dc/hello-openshift                   1          1         1         config
+logging     dc/logging-curator                   1          1         1         config
+logging     dc/logging-es-data-master-jcy100hz   1          1         1         config
+logging     dc/logging-kibana                    1          1         1         config
+test        dc/jenkins                           1          1         1         config,image(jenkins:latest)
+NAMESPACE   NAME                                   DESIRED   CURRENT   READY     AGE       CONTAINER(S)          IMAGE(S)                                                                                              SELECTOR
+default     rc/docker-registry-1                   1         1         1         5h        registry              openshift/origin-docker-registry:v3.6.0                                                               deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+default     rc/router-1                            1         1         1         5h        router                openshift/origin-haproxy-router:v3.6.0                                                                deployment=router-1,deploymentconfig=router,router=router
+logging     rc/hello-openshift-1                   1         1         1         25m       hello-openshift       docker.io/openshift/hello-openshift:latest                                                            deployment=hello-openshift-1,deploymentconfig=hello-openshift,run=hello-openshift
+logging     rc/logging-curator-1                   1         1         1         4h        curator               openshift/origin-logging-curator:v3.6.0                                                               component=curator,deployment=logging-curator-1,deploymentconfig=logging-curator,logging-infra=curator,provider=openshift
+logging     rc/logging-es-data-master-jcy100hz-1   1         1         1         5h        elasticsearch         openshift/origin-logging-elasticsearch:v3.6.0                                                         component=es,deployment=logging-es-data-master-jcy100hz-1,deploymentconfig=logging-es-data-master-jcy100hz,logging-infra=elasticsearch,provider=openshift
+logging     rc/logging-kibana-1                    1         1         1         4h        kibana,kibana-proxy   openshift/origin-logging-kibana:v3.6.0,openshift/origin-logging-auth-proxy:v3.6.0                     component=kibana,deployment=logging-kibana-1,deploymentconfig=logging-kibana,logging-infra=kibana,provider=openshift
+test        rc/jenkins-1                           1         1         1         4h        jenkins               openshift/jenkins-2-centos7@sha256:20d195e4d327c12c96e588482a3a3618a316ec7e34a9ac67d963df7887339ff2   app=jenkins,deployment=jenkins-1,deploymentconfig=jenkins
+NAMESPACE   NAME                    HOST/PORT                         PATH      SERVICES         PORT      TERMINATION          WILDCARD
+logging     routes/logging-kibana   kibana-logging.127.0.0.1.nip.io             logging-kibana   <all>     reencrypt/Redirect   None
+NAMESPACE   NAME                     CLUSTER-IP       EXTERNAL-IP   PORT(S)                              AGE       SELECTOR
+default     svc/docker-registry      172.30.1.1       <none>        5000/TCP                             5h        docker-registry=default
+default     svc/kubernetes           172.30.0.1       <none>        443/TCP,53/UDP,53/TCP                5h        <none>
+default     svc/router               172.30.228.9     <none>        80/TCP,443/TCP,1936/TCP              5h        router=router
+logging     svc/logging-es           172.30.98.241    <none>        9200/TCP                             5h        component=es,provider=openshift
+logging     svc/logging-es-cluster   172.30.45.202    <none>        9300/TCP                             5h        component=es,provider=openshift
+logging     svc/logging-kibana       172.30.38.124    <none>        443/TCP                              5h        component=kibana,provider=openshift
+test        svc/jenkins              172.30.175.234   <none>        53/TCP,8080/TCP,8443/TCP,50000/TCP   4h        deploymentconfig=jenkins
+NAMESPACE   NAME                                 DESIRED   SUCCESSFUL   AGE       CONTAINER(S)                    IMAGE(S)                          SELECTOR
+default     jobs/persistent-volume-setup         1         1            5h        storage-setup-job               openshift/origin:v3.6.0           controller-uid=76112f21-815d-11e7-b28a-005056a62ea2
+logging     jobs/openshift-ansible-logging-job   1         1            5h        openshift-ansible-logging-job   openshift/origin-ansible:v3.6.0   controller-uid=77310085-815d-11e7-b28a-005056a62ea2
+NAMESPACE   NAME                                         READY     STATUS      RESTARTS   AGE       IP             NODE
+default     po/docker-registry-1-840mk                   1/1       Running     0          5h        172.17.0.2     localhost
+default     po/persistent-volume-setup-cmfsl             0/1       Completed   0          5h        172.17.0.2     localhost
+default     po/router-1-35v63                            1/1       Running     0          5h        192.168.0.95   localhost
+logging     po/hello-openshift-1-xvjvb                   1/1       Running     0          25m       172.17.0.7     localhost
+logging     po/logging-curator-1-39w3l                   1/1       Running     0          4h        172.17.0.4     localhost
+logging     po/logging-es-data-master-jcy100hz-1-2lx69   1/1       Running     0          5h        172.17.0.3     localhost
+logging     po/logging-fluentd-774nn                     1/1       Running     0          4h        172.17.0.5     localhost
+logging     po/logging-kibana-1-40qks                    2/2       Running     0          4h        172.17.0.6     localhost
+logging     po/openshift-ansible-logging-job-2cdwx       0/1       Completed   0          5h        192.168.0.95   localhost
+test        po/jenkins-1-498ds                           1/1       Running     0          4h        172.17.0.8     localhost
+#+end_src
+
+#+HTML: </div>
