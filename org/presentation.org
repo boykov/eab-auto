@@ -1,0 +1,236 @@
+#+TITLE:     Пакеты прикладных программ на OpenPOWER кластере
+#+AUTHOR:    Бойков Е.А.
+#+EMAIL:     boykov@as.khb.ru
+#+DATE:      2017-09-14
+#+DESCRIPTION: Example of using org to create presentations using the beamer exporter
+#+KEYWORDS:  beamer org orgmode
+#+LANGUAGE:  ru
+
+# specifying the beamer startup gives access to a number of
+# keybindings which make configuring individual slides and components
+# of slides easier.  See, for instance, C-c C-b on a frame headline.
+#+STARTUP: beamer
+
+#+STARTUP: oddeven
+
+# we tell the exporter to use a specific LaTeX document class, as
+# defined in org-latex-classes.  By default, this does not include a
+# beamer entry so this needs to be defined in your configuration (see
+# the tutorial).
+#+LaTeX_CLASS: beamer
+#+LaTeX_HEADER: \usepackage[english,russian]{babel}
+# #+LaTeX_HEADER: \usepackage{beamerthemeshadow}
+#+LaTeX_HEADER: \definecolor{links}{HTML}{2A1B81}
+#+LaTeX_HEADER: \hypersetup{colorlinks,linkcolor=,urlcolor=links}
+#+LaTeX_HEADER: \def\BibUrl#1{#1}
+#+LaTeX_HEADER: \institute{ВЦ ДВО РАН}
+#+LaTeX_HEADER: \newcommand*\oldmacro{}\let\oldmacro\insertshortauthor
+#+LaTeX_HEADER: \renewcommand*\insertshortauthor{ \leftskip=.3cm \insertframenumber\,/\,\inserttotalframenumber\hfill\oldmacro}
+#+LaTeX_CLASS_OPTIONS: [bigger]
+#+LaTeX_CLASS_OPTIONS: [11pt]
+
+# Beamer supports alternate themes.  Choose your favourite here
+
+# the beamer exporter expects to be told which level of headlines
+# defines the frames.  We use the first level headlines for sections
+# and the second (hence H:2) for frames.
+#+OPTIONS:   H:2 toc:nil
+
+# the following allow us to selectively choose headlines to export or not
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+# for a column view of options and configurations for the individual
+# frames
+#+COLUMNS: %20ITEM %13BEAMER_env(Env) %6BEAMER_envargs(Args) %4BEAMER_col(Col) %7BEAMER_extra(Extra)
+
+
+* Первая часть
+** Информационные ресурсы для работы с кластером
+- Документация пользователя кластера
+  - \url{http://projects.ccfebras.ru/projects/kb/wiki/PowerUserDoc}
+    - Открытые ресурсы Redmine
+    - Нет обратной связи
+- Работа с заявками и ответы на вопросы
+  - \url{http://ckp.ccfebras.ru}
+    - Простая система вопросов/ответов, не подразумевающая
+      выразительного оформления и функциональности helpdesk и/или QA
+- Внутренняя система управления задачами Redmine
+  - \url{http://projects.ccfebras.ru/projects/grid/issues}
+    - Не для всех пользователей
+- База знаний для всех пользователей
+  - Либо добавить ресурс Redmine для всех пользователей с
+    обеспечением нужной функциональности Redmine
+  - Либо предложить отдельное решение
+** Пакеты прикладных программ по заявкам
+- Quantum ESPRESSO 5.4, 6.0
+  - PLUMED, QE-GIPAW, WEST
+- ABINIT 8.2
+- Заявки ЦКП \url{http://ckp.ccfebras.ru}
+  - Уже установленные
+    - 70. C++, OpenACC, CUDA
+    - 229. ESSL
+    - 134. fortran, python 2.7
+    - 233. Современные компиляторы языка С++ (стандарт С++ 14) и расширений (CUDA) для поддержки вычислений на GPU
+  - MS Windows
+    - 78. OpenCL (>0.9), Mono, .Net Framework 4.5
+    - 79. MS Visual Studio (13, 15) SDK for Open CL (6)
+** Пакеты прикладных программ по заявкам
+- Контейнеры
+  - 74. numpy, tensorflow-gpu, CUDA® Toolkit 8.0 (with drivers), cuDNN v5.1, libcupti-dev, keras
+  - 195. Операционная система ubuntu, Docker >= 1.9, NVIDIA drivers >= 340.29, nvidia-docker-plugin (см. https://github.com/NVIDIA/nvidia), docker TensorFlow 1.2 with GPU support, numpy virtualenv tmux
+  - 232. Python 2.7 64-bit, CUDA 8.0, TensorFlow, cuDNN 6.1
+  - 228. ОС Debian, ansible, container
+- Незавершенные и новые
+  - 219. PyCUDA, GRASS, snap-engine, gdal, pygrass, proj4, geos
+    - задача вычисляется на кластере x86
+  - 215. GAMESS-US
+    - Ошибка при сборке программы, связанная с архитектурой ppc64le
+  - 230. VASP
+  - 249. Torch7, TensorFlow, IBM ESSL, Lammps
+** Особенности работы с прикладными программами
+- 2 плохо совместимых режима работы
+  - Пакетный
+    - Классические кластеры HPC
+    - Используется планировщик и привычный программный стек
+  - Интерактивный
+    - Востребован в некоторых задачах
+    - Нет готового решения: нужно выделять узлы в отдельных кластер, работающий иначе
+- С системным ПО нет проблем, подобных тем, которые возникают с
+  прикладными программами
+  - Настройка прикладной программы часто требует участия и взаимодействия
+    нескольких специалистов
+  - Непривычная архитектура ppc64le создает больше трудностей в
+    доводке прикладных программ
+  - Некоторые программы требуют использования контейнеров
+** Системное ПО
+*** ПО 								      :BMCOL:
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+- Стандартные библиотеки
+  - glibc.ppc64le - 2.17
+  - glib2.ppc64le - 2.46.2
+  - libstdc++.ppc64le - 4.8.5
+- MPI
+  - IBM Spectrum MPI - 10.1.0.3
+  - OpenMPI - 1.10
+- Математические и параллельные библиотеки
+  - IBM ESSL - 5.5
+  - NVIDIA cuDNN - 5.1
+*** Компиляторы 						      :BMCOL:
+    :PROPERTIES:
+    :BEAMER_col: 0.5
+    :END:
+- Компиляторы
+  - IBM XL C/C++ for Linux - 13.1.5
+  - IBM XL Fortran for Linux - 15.1.5
+  - NVIDIA Cuda compiler - 8.0.61
+  - PGI Compilers - 16.10
+  - PGI Compilers - 17.4
+  - gcc.ppc64le - 4.8.5
+  - gcc-c++.ppc64le - 4.8.5
+  - gcc-gfortran.ppc64le - 4.8.5
+  - libgcc.ppc64le - 4.8.5
+** Программный стек кластера и пользовательский интерфейс
+#+begin_center
+#+begin_src dot :file ./interface.png
+digraph packages {
+        compound=true;
+	size="30,40";
+	subgraph cluster_system {
+		label = "Системное ПО";
+		"libs" [label = "стандартные\n библиотеки"; shape=box];
+		"компиляторы" [shape=box];
+		"maths" [label = "математические\n и параллельные\n библиотеки"; shape=box];
+		"MPI" [shape=box];
+		"PBS" [label="PBS,\n Environment\n modules"; shape=box];
+		{ rank = same; "libs"; "maths"; "MPI"; "PBS"; "компиляторы"}
+	}
+	"ppp" [label = "Пакеты\nприкладных\nпрограмм"; shape=box];
+	"ppp" -> "maths"[style=invis];
+	"ppp" -> "MPI"[style=invis];
+	"ppp" -> "libs"[style=invis];
+	"module 1" -> "ppp"[style=invis];
+	"..." -> "ppp"[style=invis];
+	"module 2" -> "ppp"[style=invis];
+	"module N" -> "ppp"[style=invis];
+	subgraph cluster_interface {
+		label = "Интерфейс пользователя";
+		"module 1" [label = "module\n cuda"; shape=box];
+		"module 2" [label = "module\n essl"; shape=box];
+		"..." [shape=box];
+		"module N" [label = "module\n openmpi"; shape=box];
+		{ rank = same; "module 1"; "module 2"; "..."; "module N";}
+		{ rank = same; "CLI mpirun" [shape=box]; "DSL PBS" [shape=box]; "CLI app" [shape=box]; "web" [label = "web-интерфейс\n базы знаний"; shape=box]; }
+		"CLI mpirun" -> "module 1"[style=invis];
+	}
+}
+#+end_src
+#+end_center
+** Виды интерфейсов
+
+- Интерфейс - это способ взаимодействия
+- Не только GUI и CLI: много видов интерфейсов
+- Каждый вид интерфейса решает определенные задачи
+  - GUI
+    - Интуитивно понятные элементы управления, низкий порог вхождения
+  - Web-интерфейс (Redmine, Ganglia)
+    - GUI, доступный везде
+    - Выразительное представление информации (в т.ч. документации, рецептов)
+    - Облегчает взаимодействие специалистов
+  - Языки разметки (HTML, Textile)
+    - Связь между Web-интерфейсами и языками программирования
+  - Языки программирования
+    - Сами языки, функции, программы, форматы данных являются интерфейсами
+
+** Виды интерфейсов
+
+- Формат Plain Text
+  - Формат простого текста - универсальный интерфейс
+- Система контроля версий (git)
+  - Интерфейс между простым текстом и отслеживанием изменений
+- CLI программы
+  - Взаимодействие через аргументы, конвейеры команд, склеивание программ
+- Пакетный режим
+  - Взаимодействие между CLI программами и планировщиком
+- DSL - язык, отражающий специфику предметной области
+  - CLI, директивы PBS, HTML, Textile - это DSL
+- Контейнер
+  - Интерфейс между ядром Linux и программным стеком
+
+** Environment Modules
+- Большую сложность можно скрыть за очень простым интерфейсом
+#+begin_center
+[[file:modules.png]]
+#+end_center
+** Пример описания пакетной задачи
+- Пользовательский интерфейс кластера состоит из Web-интерфейса базы знаний и интерфейса описания задачи умеренной сложности 
+#+begin_center
+[[file:espresso.png]]
+#+end_center
+** ППП на OpenPOWER кластере
+
+- Специфика OpenPOWER кластера
+  - ppc64le, GPU: порождает множество нерешенных задач
+- Задача: установка, отладка, настройка ППП
+  - Решение:
+    - Отслеживание изменений, воспроизводимость
+    - Передача задачи между специалистами
+    - Получение рецепта
+- Задача: создание документации и примеров запуска
+  - Решение:
+    - Представление рецептов в базе знаний
+    - Устранение дублирования, устаревания
+    - Обратная связь с пользователями в базе знаний
+- Задача: определение параметров планировщика, MPI, environment
+  modules, GPU, тонких настроек CPU и GPU
+  - Решение:
+    - Накопление рецептов в базе знаний
+    - Расширение рецептов на другие случаи
+    - Поддержка актуальности базы знаний в случае изменения
+      конфигурации кластера
+** 
+#+begin_center
+Спасибо за внимание!
+#+end_center

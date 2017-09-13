@@ -6,16 +6,19 @@
 #+HTML_HEAD: <style> p {text-align: justify; } </style>
 #+MACRO: fa @@html:<i class="fa fa-$1"></i>@@
 
-\\
-
 #+begin_quote
 Какие ППП установлены, отлажены, оттюнингованы. Документация, пример запуска, планировщик.
 #+end_quote
 
 - {{{fa(book)}}} http://projects.ccfebras.ru/projects/kb/wiki/PowerUserDoc
 - {{{fa(users)}}} http://projects.ccfebras.ru/projects/grid/issues
+- {{{fa(stack-exchange)}}} сайт вопросов и ответов, helpdesk
+  - можно публиковать открытую wiki и переносить вопросы из projects и ckp
+  - но тогда все-равно не будет обратной связи и возможности
+    комментирования другими пользователями
 
-
+#+RESULTS:
+[[file:./python-depends.png]]
 
 - {{{fa(user-o)}}} Пакеты прикладных программ
   - Quantum ESPRESSO 5.4, 6.0
