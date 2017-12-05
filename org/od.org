@@ -1,0 +1,129 @@
+#+TITLE: Комментарии к изменениям
+#+OPTIONS: toc:t H:6 num:nil html-postamble:nil ^:nil tags:nil author:nil
+#+SETUPFILE: theme-readtheorg-local.setup
+#+HTML_HEAD: <style type="text/css">.org-src-name{ text-align: right; }</style>
+#+HTML_HEAD: <style type="text/css">.outline-2{ margin-top: 60px; }</style>
+#+HTML_HEAD: <style> p {text-align: justify; } </style>
+
+Патчи могут быть применены как к текущей версии файла (которая есть у меня), так и к новой версии, если уже добавлены кем-то исправления. Всего 9 патчей. Внутри каждого из них есть несколько блоков исправлений. Возможно, какие-то блоки будут отвергнуты (или надо применить патчи к новой версии), тогда мне надо будет заново сформировать набор патчей и/или результирующий tex-файл. Чтобы пометить неподходящие исправления, необходимо указать их номер внутри каждого блока исправлений. Например: для 04 патча из 14 блоков отвергнуты блоки исправлений №3, №4. Кроме того, из-за исправлений произошло смещение некоторых разделов, придется выравнивать.
+Если отвергнутых блоков будет немного и пока нету новой версии файла, то можно взять файл vrptw_v1.patched.tex из архива и вручную отменить некоторые нежелательные исправления.
+
+Для патчей 01-06 в тексте файла vrptw_v1.patched+marks.pdf синим цветом указаны номера патчей рядом с местом исправления. Для остальных патчей уже таких обозначений нет, ориентироваться можно только по diff (кликнуть по ссылке Изменения...).
+
+* 01. Улучшение ссылок на литературу
+
+3 блока исправлений. Также, добавляется пакет cite (+1 строка добавлена). Ссылки выглядят более аккуратно.
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent1',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent1" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-01.patch src diff
+#+HTML: </div>
+
+* 02. Отступы строк
+
+4 блока исправлений. В 4х разделах первый абзац должен либо везде начинаться с красной строки, либо наоборот НЕ начинаться (как сделано сейчас).
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent2',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent2" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-02.patch src diff
+#+HTML: </div>
+
+* 03. Заметки красным цветом
+
+2 блока исправлений. Незаметный знак вопроса сделан красным, добавлена тильда. На самом деле, эта переменная для перестановки нигде не используется
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent3',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent3" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-03.patch src diff
+#+HTML: </div>
+
+* 04. Пробелы
+
+14 блоков исправлений. Добавлены пробелы там, где это необходимо.
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent4',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent4" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-04.patch src diff
+#+HTML: </div>
+
+* 05. Ссылки
+
+4 блока исправлений (один в закомментированном тексте). Исправлены ошибочные номера в ссылках на алгоритмы.
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent5',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent5" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-05.patch src diff
+#+HTML: </div>
+
+* 06. Матрица феромона
+
+3 блока исправлений. Исправления, касающиеся участков текста о следах и матрице феромона.
+Дополнительный вопрос: Из Алгоритма 3 непонятно, почему при $T = \tau_{\max}$ алгоритм перезапускается.
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent6',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent6" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-06.patch src diff
+#+HTML: </div>
+
+* 07. Добавление слов
+
+12 блоков исправлений. Добавлены слова там, где их по-видимости не хватает.
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent7',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent7" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-07.patch src diff
+#+HTML: </div>
+
+* 08. Грамматика
+
+11 блоков исправлений.
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent8',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent8" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-08.patch src diff
+#+HTML: </div>
+
+* 09. Пунктуация
+
+14 блоков исправлений.
+
+#+begin_html
+<div align="left">
+<a onclick="toggleDiv2('myContent9',$(this));" class="fa fa-caret-right">Изменения...</a>
+</div>
+#+end_html
+#+HTML: <div id="myContent9" style="display:none">
+#+INCLUDE: /home/eab/share/16-11.art.v1/0001-PP-09.patch src diff
+#+HTML: </div>
