@@ -4,7 +4,7 @@
 
 . ~/.keychain/`/bin/hostname`-sh
 
-REPOS="eabhome cc org lit"
+REPOS="eabhome cc lit"
 
 REPOSEXT="eabmisc/eabenglish"
 
