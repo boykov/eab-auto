@@ -6,20 +6,13 @@
 #+KEYWORDS:  beamer org orgmode
 #+LANGUAGE:  ru
 
-# specifying the beamer startup gives access to a number of
-# keybindings which make configuring individual slides and components
-# of slides easier.  See, for instance, C-c C-b on a frame headline.
 #+STARTUP: beamer
 
 #+STARTUP: oddeven
 
-# we tell the exporter to use a specific LaTeX document class, as
-# defined in org-latex-classes.  By default, this does not include a
-# beamer entry so this needs to be defined in your configuration (see
-# the tutorial).
 #+LaTeX_CLASS: beamer
 #+LaTeX_HEADER: \usepackage[english,russian]{babel}
-# #+LaTeX_HEADER: \usepackage{beamerthemeshadow}
+
 #+LaTeX_HEADER: \definecolor{links}{HTML}{2A1B81}
 #+LaTeX_HEADER: \hypersetup{colorlinks,linkcolor=,urlcolor=links}
 #+LaTeX_HEADER: \def\BibUrl#1{#1}
@@ -29,19 +22,11 @@
 #+LaTeX_CLASS_OPTIONS: [bigger]
 #+LaTeX_CLASS_OPTIONS: [11pt]
 
-# Beamer supports alternate themes.  Choose your favourite here
-
-# the beamer exporter expects to be told which level of headlines
-# defines the frames.  We use the first level headlines for sections
-# and the second (hence H:2) for frames.
 #+OPTIONS:   H:2 toc:nil
 
-# the following allow us to selectively choose headlines to export or not
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 
-# for a column view of options and configurations for the individual
-# frames
 #+COLUMNS: %20ITEM %13BEAMER_env(Env) %6BEAMER_envargs(Args) %4BEAMER_col(Col) %7BEAMER_extra(Extra)
 
 
@@ -134,39 +119,9 @@
   - libgcc.ppc64le - 4.8.5
 ** Программный стек кластера и пользовательский интерфейс
 #+begin_center
-#+begin_src dot :file ./interface.png
-digraph packages {
-        compound=true;
-	size="30,40";
-	subgraph cluster_system {
-		label = "Системное ПО";
-		"libs" [label = "стандартные\n библиотеки"; shape=box];
-		"компиляторы" [shape=box];
-		"maths" [label = "математические\n и параллельные\n библиотеки"; shape=box];
-		"MPI" [shape=box];
-		"PBS" [label="PBS,\n Environment\n modules"; shape=box];
-		{ rank = same; "libs"; "maths"; "MPI"; "PBS"; "компиляторы"}
-	}
-	"ppp" [label = "Пакеты\nприкладных\nпрограмм"; shape=box];
-	"ppp" -> "maths"[style=invis];
-	"ppp" -> "MPI"[style=invis];
-	"ppp" -> "libs"[style=invis];
-	"module 1" -> "ppp"[style=invis];
-	"..." -> "ppp"[style=invis];
-	"module 2" -> "ppp"[style=invis];
-	"module N" -> "ppp"[style=invis];
-	subgraph cluster_interface {
-		label = "Интерфейс пользователя";
-		"module 1" [label = "module\n cuda"; shape=box];
-		"module 2" [label = "module\n essl"; shape=box];
-		"..." [shape=box];
-		"module N" [label = "module\n openmpi"; shape=box];
-		{ rank = same; "module 1"; "module 2"; "..."; "module N";}
-		{ rank = same; "CLI mpirun" [shape=box]; "DSL PBS" [shape=box]; "CLI app" [shape=box]; "web" [label = "web-интерфейс\n базы знаний"; shape=box]; }
-		"CLI mpirun" -> "module 1"[style=invis];
-	}
-}
-#+end_src
+#+RESULTS:
+[[file:./interface.png]]
+
 #+end_center
 ** Виды интерфейсов
 
