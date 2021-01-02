@@ -12,8 +12,9 @@ bash -i -c "export USER=eab && /home/eab/.dropbox-dist/dropboxd &"
 # # bash -i -c "python /home/eab/git/python/watch_share.py &"
 # # bash -i -c "sudo mount -t cifs -o user=eab,password=,dir_mode=0777,file_mode=0777 //192.168.0.4/share ~/jonesbook &"
 # bash -i -c "mono ~/KeePass/KeePass.exe &"
-sudo mount --bind "/home/eab/downloads/pub/papers" "/home/eab/share/papers"
+sudo mount --bind "/home/eab/data/papers" "/home/eab/share/papers"
+sudo mount --bind "/home/eab/data/papers" "/home/eab/share/tor/papers"
 sudo mount --bind "/home/eab/git/cc/" "/home/eab/share/cc/"
 sudo mount --bind "/home/eab/git/cc/boykov.github.io/org-html-themes/styles" "/home/eab/pub/org/css/styles"
-sudo service samba restart
+sudo service samba restart 
 sudo service transmission-daemon start
